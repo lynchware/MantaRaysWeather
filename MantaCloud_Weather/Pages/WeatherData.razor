@@ -1,4 +1,5 @@
 ﻿@page "/weather"
+@inject IConfiguration _config
 @inject IHttpClientFactory _clientFactory
 
 @if (string.IsNullOrWhiteSpace(errorString) == false)
@@ -43,7 +44,7 @@ else
                             <tr>
                                 <td data-title="When">@day.Name @day.StartTime.ToString("h:mm tt")</td>
                                 <td data-title="Forecast">@day.ShortForecast</td>
-                                <td data-title="Temp">@day.Temperature @day.TemperatureUnit</td>
+                                <td data-title="Temp">@($"{day.Temperature}\u00B0{day.TemperatureUnit}")</td>
                                 <td data-title="Precipitation">@(day.ProbabilityOfPrecipitation?.Value.HasValue == true ? $"{day.ProbabilityOfPrecipitation.Value}%" : "0%")</td>
                                 <td data-title="Wind">@day.WindDirection @day.WindSpeed</td>
                             </tr>
@@ -62,24 +63,17 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        var request = new HttpRequestMessage(HttpMethod.Get,
-                    "https://api.weather.gov/gridpoints/MKX/84,98/forecast");
-        //ensures clients are open and closes and takes care of stuff behind the scene.
-        var client = _clientFactory.CreateClient();
-        client.DefaultRequestHeaders.Add("User-Agent", "(mantarayweather.com, contact@mantarayweather.com)");
-
-        HttpResponseMessage response = await client.SendAsync(request);
-
-        if (response.IsSuccessStatusCode)
+        var client = _clientFactory.CreateClient("NationalWeatherService");
+        var userCoordinates = await
+        try
         {
-            string jsonString = await response.Content.ReadAsStringAsync();
-            Console.WriteLine(jsonString);
-            forecast = await response.Content.ReadFromJsonAsync<WeatherForecast>();
-            errorString = null; //clear out any old errors
+            forecast = await client.GetFromJsonAsync<WeatherForecast>("MKX/84,98/forecast");
+            errorString = null; // clear out any old errors
         }
-        else
+        catch (Exception ex)
         {
-            errorString = $"There was an error getting our forecast: {response.ReasonPhrase}";
+            errorString = $"There was an error getting our forecast: {ex.Message}";
         }
     }
+
 }

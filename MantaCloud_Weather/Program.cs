@@ -6,8 +6,31 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 builder.Services.AddServerSideBlazor();
 builder.Services.AddHttpClient();
+
+var apiConfigs = builder.Configuration.GetSection("APIs").GetChildren();
+
+foreach (var apiConfig in apiConfigs)
+{
+    var apiName = apiConfig.Key;
+    var uri = apiConfig.GetValue<string>("Uri");
+    var userAgent = apiConfig.GetValue<string>("UserAgent");
+    var token = apiConfig.GetValue<string>("Token"); // Will be null if not provided
+
+    builder.Services.AddHttpClient(apiName, client =>
+    {
+        client.BaseAddress = new Uri(uri);
+        client.DefaultRequestHeaders.Add("User-Agent", userAgent);
+
+        if (!string.IsNullOrEmpty(token))
+        {
+            client.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
+        }
+    });
+}
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
