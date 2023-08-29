@@ -1,4 +1,6 @@
 
+using MantaRays_Weather.Interfaces;
+using MantaRays_Weather.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 
@@ -9,6 +11,7 @@ builder.Services.AddRazorPages();
 builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 builder.Services.AddServerSideBlazor();
 builder.Services.AddHttpClient();
+builder.Services.AddSingleton<IForecastAPIService, ForecastAPIService>();
 
 var apiConfigs = builder.Configuration.GetSection("APIs").GetChildren();
 
@@ -22,7 +25,10 @@ foreach (var apiConfig in apiConfigs)
     builder.Services.AddHttpClient(apiName, client =>
     {
         client.BaseAddress = new Uri(uri);
-        client.DefaultRequestHeaders.Add("User-Agent", userAgent);
+        if (!string.IsNullOrEmpty(userAgent))
+        {
+            client.DefaultRequestHeaders.Add("User-Agent", userAgent);
+        }
 
         if (!string.IsNullOrEmpty(token))
         {

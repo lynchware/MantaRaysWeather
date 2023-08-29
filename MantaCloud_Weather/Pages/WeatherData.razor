@@ -1,6 +1,7 @@
 ﻿@page "/weather"
 @inject IConfiguration _config
 @inject IHttpClientFactory _clientFactory
+@inject IForecastAPIService _forecastService
 
 @if (string.IsNullOrWhiteSpace(errorString) == false)
 {
@@ -58,22 +59,57 @@ else
 }
 
 @code {
-    WeatherForecast forecast;
-    string errorString;
+    private GeoLocation geoLocation;
+    private OfficeGridPoints gridPoints;
+    private WeatherForecast forecast;  // Made this private for consistency
+    private string errorString;  // Made this private for consistency
 
     protected override async Task OnInitializedAsync()
     {
-        var client = _clientFactory.CreateClient("NationalWeatherService");
-        var userCoordinates = await
+        await FetchWeatherForecast("98052");  // Added await to handle the asynchronous operation
+    }
+
+    private async Task FetchWeatherForecast(string zip)
+    {
         try
         {
-            forecast = await client.GetFromJsonAsync<WeatherForecast>("MKX/84,98/forecast");
-            errorString = null; // clear out any old errors
+            geoLocation = await _forecastService.GetGeoLocation(zip);
+            if (geoLocation == null)
+            {
+                errorString = "Failed to fetch GeoLocation.";
+                return;
+            }
+
+            var firstResult = geoLocation.results?.FirstOrDefault();
+            if (firstResult == null)
+            {
+                errorString = "GeoLocation results are empty.";
+                return;
+            }
+
+            gridPoints = await _forecastService.GetGridPointsAsync(
+                firstResult.geometry.Location.Lat.ToString(),
+                firstResult.geometry.Location.Lng.ToString()
+            );
+
+            if (gridPoints == null)
+            {
+                errorString = "Failed to fetch Grid Points.";
+                return;
+            }
+
+            forecast = await _forecastService.GetForecastAsync(gridPoints.ForecastOffice, gridPoints.GridX.ToString(), gridPoints.GridY.ToString());
+            if (forecast == null)
+            {
+                errorString = "Failed to fetch Weather Forecast.";
+                return;
+            }
+
+            errorString = null;  // Clear any previous errors
         }
         catch (Exception ex)
         {
-            errorString = $"There was an error getting our forecast: {ex.Message}";
+            errorString = $"There was an error: {ex.Message}";
         }
     }
-
 }
