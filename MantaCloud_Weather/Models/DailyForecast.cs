@@ -1,6 +1,6 @@
 ﻿namespace MantaRays_Weather.Models
 {
-    public class WeatherForecast
+    public class DailyForecast
     {
         public Properties Properties { get; set; }
     }

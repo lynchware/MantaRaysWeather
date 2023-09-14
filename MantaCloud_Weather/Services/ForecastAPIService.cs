@@ -19,13 +19,46 @@ namespace MantaRays_Weather.Services
             _configuration = configuration;
         }
 
-        public async Task<GeoLocation> GetGeoLocation(string zip)
+        public async Task<DailyForecast> GetWeatherForecastByZip(string zip)
+        {
+            GeoLocation geoLocation = await GetGeoLocation(zip);
+            if (geoLocation == null)
+            {
+                throw new Exception("Failed to fetch GeoLocation.");
+            }
+
+            var coordinates = geoLocation.results?.FirstOrDefault();
+            if (coordinates == null)
+            {
+                throw new Exception("GeoLocation results are empty.");
+            }
+            //passes latitude and longitude to get forcast api uri
+            OfficeGridPoints gridPoints = await GetGridPoints(
+                coordinates.geometry.Location.Lat.ToString(),
+                coordinates.geometry.Location.Lng.ToString()
+            );
+
+            if (gridPoints == null)
+            {
+                throw new Exception("Failed to fetch Grid Points.");
+            }
+
+            DailyForecast forecast = await GetDailyForecast(gridPoints.Forecast);
+            if (forecast == null)
+            {
+                throw new Exception("Failed to fetch Weather Forecast.");
+            }
+
+            return forecast;
+        }
+
+        private async Task<GeoLocation> GetGeoLocation(string zip)
         {
             GeoLocation geoLocation = null;
             var httpClient = _httpClientFactory.CreateClient("GeoCode");
             var geoApiKey = _configuration["APIs:GeoCode:Key"];
 
-            var completeUrl = $"json?address={zip}&key={geoApiKey}";
+            var completeUrl = $"{httpClient.BaseAddress}json?address={zip}&key={geoApiKey}";
 
             try
             {
@@ -39,31 +72,33 @@ namespace MantaRays_Weather.Services
             return geoLocation;
         }
 
-        public async Task<OfficeGridPoints> GetGridPointsAsync(string lat, string lon)
+        private async Task<OfficeGridPoints> GetGridPoints(string lat, string lon)
         {
-            OfficeGridPoints gridPoints = null;
-            var httpClient = _httpClientFactory.CreateClient("NWSPointLocation");
+            OfficeGridPointsResponse response = new();
 
+            var httpClient = _httpClientFactory.CreateClient("NWSPointLocation");
+            var completeUrl = $"{httpClient.BaseAddress}{lat},{lon}";
             try
             {
-                gridPoints = await httpClient.GetFromJsonAsync<OfficeGridPoints>($"points/{lat},{lon}");
+                response = await httpClient.GetFromJsonAsync<OfficeGridPointsResponse>(completeUrl);
             }
             catch (Exception ex)
             {
                 throw new Exception($"There was an error getting our grid points: {ex.Message}");
             }
 
-            return gridPoints;
+            return response.properties;
         }
 
-        public async Task<WeatherForecast> GetForecastAsync(string office, string gridx, string gridy)
+        //I may not need this as the data returned from the grid points includes the forecast urls. 
+        private async Task<DailyForecast> GetDailyForecast(string url)
         {
-            WeatherForecast forecast = null;
+            DailyForecast forecast = null;
             var httpClient = _httpClientFactory.CreateClient("NationalWeatherService");
 
             try
             {
-                forecast = await httpClient.GetFromJsonAsync<WeatherForecast>($"{office}/{gridx},{gridy}/forecast");
+                forecast = await httpClient.GetFromJsonAsync<DailyForecast>(url);
             }
             catch (Exception ex)
             {
@@ -72,6 +107,7 @@ namespace MantaRays_Weather.Services
 
             return forecast;
         }
+
 
     }
 }
