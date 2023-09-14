@@ -17,13 +17,13 @@
 
     public class Geometry
     {
-        public Location location { get; set; }
+        public Location Location { get; set; }
     }
 
     public class Location
     {
-        public float lat { get; set; }
-        public float lng { get; set; }
+        public float Lat { get; set; }
+        public float Lng { get; set; }
     }
 }
 

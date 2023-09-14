@@ -1,11 +1,19 @@
 ﻿namespace MantaRays_Weather.Models
 {
+    public class OfficeGridPointsResponse
+    {
+        public OfficeGridPoints properties { get; set; }
+    }
     public class OfficeGridPoints
     {
-        public string forecastOffice { get; set; }
-        public string gridId { get; set; }
-        public int gridX { get; set; }
-        public int gridY { get; set; }
+        public string ForecastOffice { get; set; }
+        public string GridId { get; set; }
+        public int GridX { get; set; }
+        public int GridY { get; set; }
+        public string Forecast { get; set; }
+        public string ForecastHourly { get; set; }
+        public string ForecastGridData { get; set; }
+        public string ObservationStations { get; set; }
     }
 
 }

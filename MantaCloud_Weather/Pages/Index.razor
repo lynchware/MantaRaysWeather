@@ -1,9 +1,109 @@
 ﻿@page "/"
+@inject IConfiguration _config
+@inject IHttpClientFactory _clientFactory
+@inject IForecastAPIService _forecastService
 
-<PageTitle>Index</PageTitle>
 
-<h1>Hello, world!</h1>
+@if (forecast is null)
+{
+    <div>
+        <p class="mb-1">Please Enter Zip Code</p>
+        <InputNumber class="p-2" @bind-Value="zipCode" />
+        <button class="mx-2 btn btn-primary" @onclick="() => FetchWeatherForecast(zipCode.ToString())">Get Forecast</button>
+        <p class="alert-danger">@errorString</p>
+    </div>
+    @if (isLoading)
+    {
+        <div class="h4">Loading...</div>
+    }
+}
+else
+{
+    <div class="wrapper">
 
-Welcome to your new app.
+        <div class="table-container">
+            <div class="d-flex justify-content-between">
+                <h2>Forecast for Week of @forecast.Properties.Updated.ToString("MMMM dd yyyy")</h2>
+                <button class="mb-2 btn btn-primary" @onclick="Clear">Change Location</button>
+            </div>
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+            <table>
+                <thead>
+                    <tr>
+                        <th><i class="oi oi-plus"></i></th>
+                        <th>Forecast</th>
+                        <th><i class="bi bi-thermometer-half"></i></th>
+                        <th><i class="bi bi-cloud-rain-fill"></i></th>
+                        <th><i class="bi bi-wind"></i></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (forecast.Properties.Periods is not null)
+                    {
+                        string lastDay = string.Empty;
+                        @foreach (var day in forecast.Properties.Periods)
+                        {
+                            string currentDay = day.StartTime.ToString("dddd");
+                            if (currentDay != lastDay)
+                            {
+                                <tr>
+                                    <td colspan="5" class="h4 bg-black text-white">
+                                        <strong>@currentDay</strong>
+                                    </td>
+                                </tr>
+                                lastDay = currentDay;
+                            }
+                            <tr>
+                                <td data-title="When">@day.Name @day.StartTime.ToString("h:mm tt")</td>
+                                <td data-title="Forecast">@day.ShortForecast</td>
+                                <td data-title="Temp">@($"{day.Temperature}\u00B0{day.TemperatureUnit}")</td>
+                                <td data-title="Precipitation">@(day.ProbabilityOfPrecipitation?.Value.HasValue == true ? $"{day.ProbabilityOfPrecipitation.Value}%" : "0%")</td>
+                                <td data-title="Wind">@day.WindDirection @day.WindSpeed</td>
+                            </tr>
+                        }
+                    }
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+
+@code {
+    private GeoLocation? geoLocation;
+    private OfficeGridPoints? gridPoints;
+    private DailyForecast? forecast; 
+    private int? zipCode = null;
+    private string errorString = "";  
+    private bool isLoading = false;
+    protected override async Task OnInitializedAsync()
+    {
+
+    }
+
+    private async Task FetchWeatherForecast(string zip)
+    {
+        if(zip.Length != 5)
+        {
+            errorString = "Please enter a valid 5 digit zip code.";
+            return;
+        }
+        isLoading = true;
+        forecast = await _forecastService.GetWeatherForecastByZip(zip);
+        if      (forecast == null)
+        {
+            errorString = "Failed to fetch Weather Forecast.";
+            return;
+        }
+        isLoading = false;
+
+        errorString = "";
+    }
+
+    private void Clear()
+    {
+        forecast = null;
+        errorString = "";
+    }
+
+}
