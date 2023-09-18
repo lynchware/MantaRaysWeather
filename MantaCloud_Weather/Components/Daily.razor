@@ -1,0 +1,60 @@
+﻿
+<div class="wrapper">
+@if(Forecast is null)
+{
+    <p class="alert-danger">@ErrorString</p>
+} 
+else
+{
+    <div class="table-container">
+        <div class="d-flex justify-content-between">
+            <h2>Forecast for Week of @Forecast.Properties.Updated.ToString("MMMM dd yyyy")</h2>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th><i class="oi oi-plus"></i></th>
+                    <th>Forecast</th>
+                    <th><i class="bi bi-thermometer-half"></i></th>
+                    <th><i class="bi bi-cloud-rain-fill"></i></th>
+                    <th><i class="bi bi-wind"></i></th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Forecast.Properties.Periods is not null)
+                {
+                    string lastDay = string.Empty;
+                    @foreach (var day in Forecast.Properties.Periods)
+                    {
+                        string currentDay = day.StartTime.ToString("dddd");
+                        if (currentDay != lastDay)
+                        {
+                            <tr>
+                                <td colspan="5" class="h4 bg-black text-white">
+                                    <strong>@currentDay</strong>
+                                </td>
+                            </tr>
+                            lastDay = currentDay;
+                        }
+                        <tr>
+                            <td data-title="When">@day.Name @day.StartTime.ToString("h:mm tt")</td>
+                            <td data-title="Forecast">@day.ShortForecast</td>
+                            <td data-title="Temp">@($"{day.Temperature}\u00B0{day.TemperatureUnit}")</td>
+                            <td data-title="Precipitation">@(day.ProbabilityOfPrecipitation?.Value.HasValue == true ? $"{day.ProbabilityOfPrecipitation.Value}%" : "0%")</td>
+                            <td data-title="Wind">@day.WindDirection @day.WindSpeed</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+
+}
+</div>
+@code {
+    [Parameter]
+    public DailyForecast? Forecast { get; set; }
+    [Parameter]
+    public string? ErrorString { get; set; }
+}

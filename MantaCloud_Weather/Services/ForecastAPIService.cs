@@ -1,6 +1,6 @@
-﻿using MantaRays_Weather.Models;
-using MantaRays_Weather.Interfaces;
+﻿using MantaRays_Weather.Interfaces;
 using System.Net.Http;
+using MantaRays_Weather.Models.Daily;
 
 namespace MantaRays_Weather.Services
 {

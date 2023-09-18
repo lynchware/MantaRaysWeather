@@ -1,0 +1,9 @@
+﻿@inject IConfiguration _config
+@inject IHttpClientFactory _clientFactory
+@inject IForecastAPIService _forecastService
+
+
+@code {
+    [Parameter]
+    public string? ErrorString { get; set; }
+}

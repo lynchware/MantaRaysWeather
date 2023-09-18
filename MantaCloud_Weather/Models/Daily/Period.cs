@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.Metrics;
 
-namespace MantaRays_Weather.Models
+namespace MantaRays_Weather.Models.Daily
 {
     public class Period
     {

@@ -1,4 +1,4 @@
-﻿using MantaRays_Weather.Models;
+﻿using MantaRays_Weather.Models.Daily;
 
 namespace MantaRays_Weather.Interfaces
 {
