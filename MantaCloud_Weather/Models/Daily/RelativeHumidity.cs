@@ -1,4 +1,4 @@
-﻿namespace MantaRays_Weather.Models
+﻿namespace MantaRays_Weather.Models.Daily
 {
     public class RelativeHumidity
     {

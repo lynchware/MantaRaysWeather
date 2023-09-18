@@ -83,14 +83,14 @@ else
 
     private async Task FetchWeatherForecast(string zip)
     {
-        if(zip.Length != 5)
+        if (zip.Length != 5)
         {
             errorString = "Please enter a valid 5 digit zip code.";
             return;
         }
         isLoading = true;
         forecast = await _forecastService.GetWeatherForecastByZip(zip);
-        if      (forecast == null)
+        if (forecast == null)
         {
             errorString = "Failed to fetch Weather Forecast.";
             return;
