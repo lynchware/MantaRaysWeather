@@ -1,4 +1,5 @@
 ﻿@page "/"
+@using MantaRays_Weather.Enums;
 @inject IConfiguration _config
 @inject IHttpClientFactory _clientFactory
 @inject IForecastAPIService _forecastService
@@ -43,7 +44,7 @@ else
         }
         else if (SelectedTab == Tabs.Hourly)
         {
-            <Hourly ErrorString="errorString" />
+            <Hourly Forecast="hourlyForecast" ErrorString="errorString" />
         }
         else if (SelectedTab == Tabs.Daily)
         {
@@ -55,6 +56,7 @@ else
 
 @code {
     private DailyForecast? forecast; 
+    private HourlyForecast? hourlyForecast;
     private enum Tabs { Today, Hourly, Daily };
     private Tabs SelectedTab { get; set; } = Tabs.Daily;
 
@@ -75,12 +77,13 @@ else
             return;
         }
         isLoading = true;
-        forecast = await _forecastService.GetWeatherForecastByZip(zip);
+        forecast = await _forecastService.GetForecastByZip<DailyForecast>(zip, ForecastType.Daily);
         if (forecast == null)
         {
             errorString = "Failed to fetch Weather Forecast.";
             return;
         }
+        hourlyForecast = await _forecastService.GetForecastByZip<HourlyForecast>(zip, ForecastType.Hourly);
         isLoading = false;
 
         errorString = "";
