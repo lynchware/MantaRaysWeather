@@ -36,6 +36,7 @@ foreach (var apiConfig in apiConfigs)
         }
     });
 }
+builder.Services.AddApplicationInsightsTelemetry(builder.Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]);
 
 var app = builder.Build();
 
