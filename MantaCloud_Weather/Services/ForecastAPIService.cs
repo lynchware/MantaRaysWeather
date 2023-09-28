@@ -57,14 +57,26 @@ namespace MantaRays_Weather.Services
         {
             T forecast = default(T);
             var httpClient = _httpClientFactory.CreateClient("NationalWeatherService");
+            int retries = 3;
 
-            try
+            while(retries > 0)
             {
-                forecast = await httpClient.GetFromJsonAsync<T>(url);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"There was an error getting our forecast: {ex.Message}");
+                try
+                {
+                    forecast = await httpClient.GetFromJsonAsync<T>(url);
+                    if(forecast != null)
+                    {
+                        break;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    retries--;
+                    if (retries == 0)
+                    {
+                        throw new Exception($"There was an error getting our forecast: {ex.Message}");
+                    }
+                }
             }
 
             return forecast;
