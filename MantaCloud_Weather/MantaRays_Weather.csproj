@@ -4,10 +4,17 @@
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationInsightsResourceId>/subscriptions/dbe05189-1f72-4d90-8e85-5a798acdb2a5/resourceGroups/MantaRaysWeather-ResourceGroup/providers/microsoft.insights/components/MantaRaysWeather</ApplicationInsightsResourceId>
+    <UserSecretsId>a2750b3c-9d78-4bbe-a124-75079bdc03fd</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
     <Folder Include="wwwroot\img\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.15.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.ApplicationInsights" Version="2.21.0" />
   </ItemGroup>
 
 </Project>
