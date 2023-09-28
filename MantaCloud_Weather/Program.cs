@@ -3,6 +3,7 @@ using MantaRays_Weather.Interfaces;
 using MantaRays_Weather.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.Extensions.Logging.ApplicationInsights;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,7 +38,7 @@ foreach (var apiConfig in apiConfigs)
     });
 }
 builder.Services.AddApplicationInsightsTelemetry(builder.Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]);
-
+builder.Logging.AddFilter<ApplicationInsightsLoggerProvider>("Default", LogLevel.Warning);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
