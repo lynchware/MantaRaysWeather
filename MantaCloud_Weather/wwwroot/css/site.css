@@ -30,7 +30,7 @@ a, .btn-link {
 }
 
 .content {
-    padding-top: 1.1rem;
+    padding-top: 0.4rem;
 }
 
 .valid.modified:not([type=checkbox]) {
@@ -89,12 +89,30 @@ a, .btn-link {
     border-bottom-left-radius: 50px;
     box-shadow: inset 0 0 10px #f8a100;
 }
-
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    margin: 0;
+}
 .inputHeader{
     display: flex;
     justify-content: center;
-    padding: 1px 0px 10px 0px;
+    padding: 15px 0px 10px 0px;
 }
+    .inputHeader > input {
+		padding: 1rem;
+	}
+    .inputHeaderSm{
+        display: flex;
+		justify-content: right;
+        font-size: 1rem;
+    }
+        .inputHeaderSm > input {
+            width: 4.2rem;
+            height: 2rem;
+        }
 /*Table Styles*/
 table-container {
     max-width: 100%;

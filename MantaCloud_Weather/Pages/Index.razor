@@ -5,9 +5,19 @@
 @inject IForecastAPIService _forecastService
 @using MantaRays_Weather.Components
 
-<div class="inputHeader">
-    <InputNumber placeholder="Enter a ZipCode" class="p-2" @bind-Value="zipCode" />
-    <button class="mx-2 btn btn-primary" @onclick="() => FetchWeatherForecast(zipCode.ToString())">Get Forecast</button>
+<div class="@(forecast == null ? "inputHeader" : "inputHeaderSm")">
+    <InputNumber type="number" placeholder="Enter a ZipCode" @bind-Value="zipCode" autofocus />
+    @if(forecast is null)
+    {
+        <button class="mx-2 btn btn-primary" @onclick="() => FetchWeatherForecast(zipCode.ToString())">Get Forecast</button>
+    }
+    else
+    {
+        <button class="mx-2 btn p-0" @onclick="() => FetchWeatherForecast(zipCode.ToString())">
+            <i class="bi bi-binoculars-fill" style="color: var(--bs-orange);"></i>
+        </button>
+    }
+    
 </div>
 @if (forecast is null)
 { 
@@ -24,10 +34,6 @@
 else
 {    
     <div class="nav-tabs">
-        <button @onclick="() => SetSelectedTab(Tabs.Today)"
-                class="tab-button @(SelectedTab == Tabs.Today ? "active" : string.Empty)">
-            Today
-        </button>
         <button @onclick="() => SetSelectedTab(Tabs.Hourly)"
                 class="tab-button @(SelectedTab == Tabs.Hourly ? "active" : string.Empty)">
             Hourly
@@ -38,17 +44,14 @@ else
         </button>
     </div>
     <div class="forecastWrapper">
-        @if (SelectedTab == Tabs.Today)
-        {
-            <Today ErrorString="errorString" />
-        }
-        else if (SelectedTab == Tabs.Hourly)
+        
+        @if (SelectedTab == Tabs.Hourly)
         {
             <Hourly Forecast="hourlyForecast" ErrorString="errorString" />
         }
         else if (SelectedTab == Tabs.Daily)
         {
-            <Daily Forecast="forecast" ErrorString="errorString" />
+            <Daily Forecast="forecast" ErrorString="errorString" City="@city"/>
         }
     </div>
 }
@@ -61,6 +64,7 @@ else
     private Tabs SelectedTab { get; set; } = Tabs.Daily;
 
     private int? zipCode = null;
+    private string city = "";
     private string errorString = "";  
     private bool isLoading = false;
 
@@ -77,13 +81,26 @@ else
             return;
         }
         isLoading = true;
-        forecast = await _forecastService.GetForecastByZip<DailyForecast>(zip, ForecastType.Daily);
-        if (forecast == null)
+        var dayResult = await _forecastService.GetForecastByZip<DailyForecast?>(zip, ForecastType.Daily);
+
+        if (!dayResult.IsSuccess || dayResult.Data == null)
         {
-            errorString = "Failed to fetch Weather Forecast.";
+            errorString = dayResult.ErrorMessage ?? "Failed to fetch Weather Forecast.";
             return;
         }
-        hourlyForecast = await _forecastService.GetForecastByZip<HourlyForecast>(zip, ForecastType.Hourly);
+        city = string.IsNullOrEmpty(dayResult.City) ? "" : dayResult.City.Split(',')[0].Trim();
+
+        forecast = dayResult.Data;
+
+        var hourResult = await _forecastService.GetForecastByZip<HourlyForecast?>(zip, ForecastType.Hourly);
+
+        if (!hourResult.IsSuccess || hourResult.Data == null)
+        {
+            errorString = hourResult.ErrorMessage ?? "Failed to fetch Weather Forecast.";
+            return;
+        }
+
+        hourlyForecast = hourResult.Data;
         isLoading = false;
 
         errorString = "";
@@ -99,5 +116,9 @@ else
     {
         SelectedTab = tab;
     }
+
+
+
+
 
 }

@@ -13,7 +13,7 @@ builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnC
 builder.Services.AddServerSideBlazor();
 builder.Services.AddHttpClient();
 builder.Services.AddSingleton<IForecastAPIService, ForecastAPIService>();
-
+var insightsKey = builder.Configuration["ApplicationInsights:ConnectionString"];
 var apiConfigs = builder.Configuration.GetSection("APIs").GetChildren();
 
 foreach (var apiConfig in apiConfigs)
@@ -22,7 +22,6 @@ foreach (var apiConfig in apiConfigs)
     var uri = apiConfig.GetValue<string>("Uri");
     var userAgent = apiConfig.GetValue<string>("UserAgent");
     var token = apiConfig.GetValue<string>("Token"); // Will be null if not provided
-
     builder.Services.AddHttpClient(apiName, client =>
     {
         client.BaseAddress = new Uri(uri);
@@ -37,7 +36,7 @@ foreach (var apiConfig in apiConfigs)
         }
     });
 }
-builder.Services.AddApplicationInsightsTelemetry(builder.Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]);
+builder.Services.AddApplicationInsightsTelemetry(insightsKey);
 builder.Logging.AddFilter<ApplicationInsightsLoggerProvider>("Default", LogLevel.Warning);
 var app = builder.Build();
 
