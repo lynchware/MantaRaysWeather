@@ -10,6 +10,9 @@
     @if(forecast is null)
     {
         <button class="mx-2 btn btn-primary" @onclick="() => FetchWeatherForecast(zipCode.ToString())">Get Forecast</button>
+        <div class="frontpageLogo">
+            <img src="img/MantaRays_Logo.svg" style="width:100%; height:100%;" alt="MantaRays Logo"/>
+        </div>
     }
     else
     {
@@ -23,7 +26,6 @@
 { 
     @if (!string.IsNullOrEmpty(errorString))
     {
-        <h3>Loading...</h3>
         <p class="alert-danger">@errorString</p>
     }
     @if(isLoading)
@@ -32,15 +34,21 @@
     }
 }
 else
-{    
-    <div class="nav-tabs">
-        <button @onclick="() => SetSelectedTab(Tabs.Hourly)"
-                class="tab-button @(SelectedTab == Tabs.Hourly ? "active" : string.Empty)">
-            Hourly
-        </button>
+{   <div class="currentHeader">
+        <div class="d-flex justify-content-between">
+            <h2 id="headline">@(city) forecast for @(forecast.Properties.Updated.DayOfWeek) @($"{forecast.Properties.Updated.Date.Day}{GetDateSuffix(forecast.Properties.Updated.Date.Day)}")</h2>
+        </div>
+        <div class="currentForecast">
+        </div>
+    </div> 
+    <div class="waveTabs">
         <button @onclick="() => SetSelectedTab(Tabs.Daily)"
                 class="tab-button @(SelectedTab == Tabs.Daily ? "active" : string.Empty)">
             Daily
+        </button>
+        <button @onclick="() => SetSelectedTab(Tabs.Hourly)"
+                class="tab-button @(SelectedTab == Tabs.Hourly ? "active" : string.Empty)">
+            Hourly
         </button>
     </div>
     <div class="forecastWrapper">
@@ -117,6 +125,24 @@ else
         SelectedTab = tab;
     }
 
+    private string GetDateSuffix(int day)
+    {
+        switch (day)
+        {
+            case 1:
+            case 21:
+            case 31:
+                return "st";
+            case 2:
+            case 22:
+                return "nd";
+            case 3:
+            case 23:
+                return "rd";
+            default:
+                return "th";
+        }
+    }
 
 
 

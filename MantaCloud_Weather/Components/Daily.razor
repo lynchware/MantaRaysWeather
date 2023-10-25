@@ -7,14 +7,10 @@
 else
 {
     <div class="table-container">
-        <div class="d-flex justify-content-between">
-            <h2>@(City) forecast for Week of @Forecast.Properties.Updated.ToString("MMMM dd yyyy")</h2>
-        </div>
-
         <table>
             <thead>
                 <tr>
-                    <th></th>
+                    <th>Week of @Forecast.Properties.Updated.ToString("MMMM dd yyyy")</th>
                     <th>Forecast</th>
                     <th><i class="bi bi-thermometer-half"></i></th>
                     <th><i class="bi bi-cloud-rain-fill"></i></th>
