@@ -78,11 +78,7 @@ a, .btn-link {
     width: min(900px, 100% - 3rem);
     margin-inline: auto;
 }
-.frontpageLogo{
-    display: block;
-    position: absolute;
-    top: 79%;
-}
+
 /*.forecastWrapper {
     margin: 1rem;
     padding: 1rem;
@@ -123,7 +119,7 @@ h2 {
 .inputHeader{
     display: flex;
     justify-content: center;
-    padding: 15px 0px 10px 0px;
+    padding: 195px 0px 10px 0px;
 }
     .inputHeader > input {
 		padding: 1rem;
@@ -221,3 +217,54 @@ i.bi{
 		text-transform: capitalize;
 	}
 }
+.frontpageLogo {
+    position: relative;
+    height: 40vh;
+}
+    #titleImageSm{
+        position: absolute;
+		top: 0;
+		left: 0;
+		height: 5%;
+    }
+    #logoImageSm {
+        position: absolute;
+        top: 0;
+        right: 0;
+        height: 50%;
+    }
+/*Title Screen Animation*/
+
+#logoImage, #titleImage {
+    position: absolute;
+}
+
+@keyframes moveAndRotateLogo {
+    from { 
+        top: 1000px; /* Starting position of the #logoImage */
+        transform: rotate(0deg); /* Initial rotation */
+    }
+
+    to {
+        top: 270px; /* Target position where the #logoImage should end up */
+        transform: rotate(180deg); /* Rotation */
+    }
+}
+
+#logoImage {
+    top: 1000px;
+    left: 29%;
+    width: 40vw;
+    animation: moveAndRotateLogo 5s ease-in-out forwards;
+}
+
+#titleImage {
+    top: 0;
+    left: 32%;
+    width: 35vw;
+}
+
+/* Animation Trigger, for example on hover */
+/*.wrapper:hover #titleImage {
+    top: 50px;*/ /* New position after animation, adjust as necessary */
+/*}*/
