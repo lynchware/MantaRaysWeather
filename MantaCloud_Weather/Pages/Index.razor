@@ -4,37 +4,25 @@
 @inject IHttpClientFactory _clientFactory
 @inject IForecastAPIService _forecastService
 @using MantaRays_Weather.Components
-<img id="@(forecast == null ? "titleImage" : "titleImageSm")" src="/img/MantaRaysTitle.svg" alt="Logo Title">
-<div class="@(forecast == null ? "inputHeader" : "inputHeaderSm")">
-    <InputNumber type="number" placeholder="Enter a ZipCode" @bind-Value="zipCode" autofocus />
-    @if(forecast is null)
-    {
-        <button class="mx-2 btn btn-primary" @onclick="() => FetchWeatherForecast(zipCode.ToString())">Get Forecast</button>
-
-    }
-    else
-    {
-        <button class="mx-2 btn p-0" @onclick="() => FetchWeatherForecast(zipCode.ToString())">
-            <i class="bi bi-binoculars-fill" style="color: var(--bs-orange);"></i>
-        </button>
-        <img src="img/MantaRays_Logo.svg" style="width:10%; height:10%;" alt="MantaRays Logo"/>
-    }
     
-</div>
 @if (forecast is null)
 {
-        <img id="@(forecast == null ? "logoImage" : "logoImageSm")" src="/img/MantaRays_Logo.svg" alt="Manta Ray Logo">
-    @if (!string.IsNullOrEmpty(errorString))
-    {
-        <p class="alert-danger">@errorString</p>
-    }
-    @if(isLoading)
-    {
-        <h3>Loading...</h3>
-    }
+    <StartPage 
+        ErrorString="@errorString"
+        IsLoading="@isLoading"
+
+        OnZipCodeEntered="@SetZipCodeHandler">
+    </StartPage>
 }
 else
-{   <div class="currentHeader">
+{
+    <InputHeader 
+        ErrorString="@errorString"
+        IsLoading="@isLoading"
+        OnZipCodeEntered="@SetZipCodeHandler">
+    </InputHeader>
+
+   <div class="currentHeader">
         <div class="d-flex justify-content-between">
             <h2 id="headline">@(city) forecast for @(forecast.Properties.Updated.DayOfWeek) @($"{forecast.Properties.Updated.Date.Day}{GetDateSuffix(forecast.Properties.Updated.Date.Day)}")</h2>
         </div>
@@ -76,10 +64,7 @@ else
     private string errorString = "";  
     private bool isLoading = false;
 
-    protected override async Task OnInitializedAsync()
-    {
-
-    }
+    private bool startAnimation = false;
 
     private async Task FetchWeatherForecast(string zip)
     {
@@ -144,7 +129,10 @@ else
         }
     }
 
-
+    public async Task SetZipCodeHandler(string zip)
+    {
+        await FetchWeatherForecast(zip);
+    } 
 
 
 }

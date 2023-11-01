@@ -1,0 +1,35 @@
+﻿
+
+<div class="inputHeaderSm">
+    @if (!string.IsNullOrEmpty(ErrorString))
+    {
+        <p class="alert-danger">@ErrorString</p>
+    }
+    @if (IsLoading)
+    {
+        <h3>Loading...</h3>
+    }
+    <button class="mx-2 btn p-0 searchBtn" @onclick="() => SetZipCode(zipCode.ToString())">
+        <i class="bi bi-binoculars-fill" style="color: var(--bs-orange);"></i>
+    </button>
+    <InputNumber type="number" placeholder="Enter a ZipCode" @bind-Value="zipCode" autofocus />
+    <img src="img/MantaRaysTitle.svg" id="headerTitle" alt="MantaRays Logo" />
+    
+
+</div>
+
+
+@code {
+    [Parameter]
+    public string? ErrorString { get; set; }
+    [Parameter]
+    public bool IsLoading { get; set; }
+    [Parameter]
+    public EventCallback<string> OnZipCodeEntered { get; set; }
+    private int? zipCode = null;
+
+    public async Task SetZipCode(string zipCode)
+    {
+        await OnZipCodeEntered.InvokeAsync(zipCode);
+    }
+}
