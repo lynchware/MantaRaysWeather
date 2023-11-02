@@ -1,20 +1,21 @@
-﻿
-
-<div class="inputHeaderSm">
-    @if (!string.IsNullOrEmpty(ErrorString))
-    {
-        <p class="alert-danger">@ErrorString</p>
-    }
-    @if (IsLoading)
-    {
-        <h3>Loading...</h3>
-    }
-    <button class="mx-2 btn p-0 searchBtn" @onclick="() => SetZipCode(zipCode.ToString())">
-        <i class="bi bi-binoculars-fill" style="color: var(--bs-orange);"></i>
-    </button>
-    <InputNumber type="number" placeholder="Enter a ZipCode" @bind-Value="zipCode" autofocus />
-    <img src="img/MantaRaysTitle.svg" id="headerTitle" alt="MantaRays Logo" />
-    
+﻿@if (!string.IsNullOrEmpty(ErrorString))
+{
+    <p class="alert-danger errorString">@ErrorString</p>
+}
+@if (IsLoading)
+{
+    <p class="loading">Loading...</p>
+}
+<div class="inputHeaderSm container-fluid">
+    <div class="row">
+        <img class="col-12 col-lg-6" src="img/MantaRaysTitle.svg" id="headerTitle" alt="MantaRays Logo" />
+        <form class="col-12 col-lg-6" @onsubmit=SetZipCode>
+            <InputNumber type="number" placeholder="Enter a ZipCode" @bind-Value="zipCode" autofocus />
+            <button class="mx-2 btn p-0 searchBtn">
+                <i class="bi bi-binoculars-fill" style="color: var(--bs-orange);"></i>
+            </button>
+        </form>
+    </div>
 
 </div>
 
@@ -28,8 +29,8 @@
     public EventCallback<string> OnZipCodeEntered { get; set; }
     private int? zipCode = null;
 
-    public async Task SetZipCode(string zipCode)
+    public async Task SetZipCode()
     {
-        await OnZipCodeEntered.InvokeAsync(zipCode);
+        await OnZipCodeEntered.InvokeAsync(zipCode.ToString());
     }
 }
