@@ -123,27 +123,50 @@ h2 {
     .inputHeader > * {
         margin: 10px;
     }
-    .inputHeaderSm{
-        font-size: 1rem;
-    }
-        .inputHeaderSm > * {
-			margin: 10px;
-            padding-left: 10px;
-            padding-right: 10px;
-		}
-        .inputHeaderSm > input {
-            min-width: 12.2rem;
-            height: 3rem;
-        }
+.inputHeaderSm {
+    display: flex; /* Flexbox container */
+    flex-direction: row; /* Stack children vertically on narrow screens */
+    align-items: center; /* Center children horizontally */
+    justify-content: space-between; /* Center children vertically */
+    flex-wrap: wrap; /* Allow items to wrap */
+    gap: 10px; /* Add space between flex items */
+    padding: 10px; /* Add padding to the container */
+}
+
 #headerTitle {
-    text-align: center;
     margin-top: -2px;
-    width: 10rem;
+    width: 10rem; /* Fixed width as per your requirement */
+    margin-left: auto;
+    margin-right: auto;
 }
+
+.inputHeaderSm form {
+    display: flex; /* Flexbox container */
+    flex-direction: row; /* Align form elements horizontally */
+    align-items: center; /* Align form elements vertically */
+    gap: 10px; /* Add space between form elements */
+}
+@media only screen and (max-width: 768px){
+    .inputHeaderSm form {
+		margin-left: auto;
+        margin-right:auto;
+	}
+}
+.inputHeaderSm input {
+    height: 3rem; /* Set fixed height for input */
+    min-width: 12.2rem; /* Minimum width for the input */
+}
+
 .searchBtn {
-    display: inline;
-    height: fit-content;
+    padding: 0; /* Remove padding from the button */
+    background: none; /* Optional: Removes default button background */
+    border: none; /* Optional: Removes default button border */
 }
+
+.inputHeaderSm .bi-binoculars-fill {
+    color: darkorange; /* Set icon color */
+}
+
 .errorString, loading {
     position:absolute;
     bottom: 15px;
