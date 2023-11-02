@@ -1,53 +1,40 @@
 ﻿
-<div class="wrapper">
+
 @if(Forecast is null)
 {
     <p class="alert-danger">@ErrorString</p>
 } 
 else
 {
-    <div class="table-container">
-        <table>
-            <thead>
-                <tr>
-                    <th>Week of @Forecast.Properties.Updated.ToString("MMMM dd yyyy")</th>
-                    <th>Forecast</th>
-                    <th><i class="bi bi-thermometer-half"></i></th>
-                    <th><i class="bi bi-cloud-rain-fill"></i></th>
-                    <th><i class="bi bi-wind"></i></th>
-                </tr>
-            </thead>
-            <tbody>
-                @if (Forecast.Properties.Periods is not null)
+
+    <div class="forecast-container">
+        <div class="forecast-subcontainer">
+
+            @if(Forecast.Properties.Periods is not null)
+            {
+                string lastDay = string.Empty;
+                @foreach(var day in Forecast.Properties.Periods)
                 {
-                    string lastDay = string.Empty;
-                    @foreach (var day in Forecast.Properties.Periods)
-                    {
-                        string currentDay = day.StartTime.ToString("dddd");
-                        if (currentDay != lastDay)
-                        {
-                            <tr>
-                                <td colspan="5" class="h4 bg-black text-white">
-                                    <strong>@currentDay</strong>
-                                </td>
-                            </tr>
-                            lastDay = currentDay;
-                        }
-                        <tr>
-                            <td data-title="When">@day.Name @day.StartTime.ToString("h:mm tt")</td>
-                            <td data-title="Forecast">@day.ShortForecast</td>
-                            <td data-title="Temp">@($"{day.Temperature}\u00B0{day.TemperatureUnit}")</td>
-                            <td data-title="Precipitation">@(day.ProbabilityOfPrecipitation?.Value.HasValue == true ? $"{day.ProbabilityOfPrecipitation.Value}%" : "0%")</td>
-                            <td data-title="Wind">@day.WindDirection @day.WindSpeed</td>
-                        </tr>
-                    }
+                    string currentDay = day.StartTime.ToString("dddd").Substring(0, 3);                    
+                    <div class="forecast-period">
+                        <div class="forecast-header">
+                            <strong>@(currentDay != lastDay ? currentDay : lastDay + " Night")</strong>
+                        </div>
+                        <div class="forecast-image">
+                            <img src="@day.Icon" alt="@day.ShortForecast" />
+                        </div>
+                        <div class="@(currentDay != lastDay ? "high" : "low")forecast-temp">
+                            <strong>@(currentDay != lastDay ? "High" : "Low") </strong>
+                            <span>@($"{day.Temperature}\u00B0{day.TemperatureUnit}")</span>
+                        </div>
+                    </div>
+                    lastDay = currentDay;
                 }
-            </tbody>
-        </table>
+            }
+        </div>
     </div>
 
 }
-</div>
 @code {
     [Parameter]
     public DailyForecast? Forecast { get; set; }
@@ -55,4 +42,7 @@ else
     public string? ErrorString { get; set; }
     [Parameter]
     public string City { get; set; } = "";
+
+
+    //Method to return current day of pervious day + "Night" for currentDay that is null.
 }

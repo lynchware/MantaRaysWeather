@@ -22,13 +22,7 @@ else
         OnZipCodeEntered="@SetZipCodeHandler">
     </InputHeader>
 
-   <div class="currentHeader">
-        <div class="d-flex justify-content-between">
-            <h2 id="headline">@(city) forecast for @(forecast.Properties.Updated.DayOfWeek) @($"{forecast.Properties.Updated.Date.Day}{GetDateSuffix(forecast.Properties.Updated.Date.Day)}")</h2>
-        </div>
-        <div class="currentForecast">
-        </div>
-    </div> 
+    <!--Place Current Forecast Here once we have the graphics-->
     <div class="waveTabs">
         <button @onclick="() => SetSelectedTab(Tabs.Daily)"
                 class="tab-button @(SelectedTab == Tabs.Daily ? "active" : string.Empty)">

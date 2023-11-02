@@ -1,4 +1,5 @@
-﻿@if (!string.IsNullOrEmpty(ErrorString))
+﻿@inject IJSRuntime JS;
+@if (!string.IsNullOrEmpty(ErrorString))
 {
     <p class="alert-danger errorString">@ErrorString</p>
 }
@@ -25,6 +26,14 @@
     [Parameter]
     public EventCallback<string> OnZipCodeEntered { get; set; }
     private int? zipCode = null;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JS.InvokeVoidAsync("setBackgroundImage", "none");
+        }
+    }
 
     public async Task SetZipCode()
     {
