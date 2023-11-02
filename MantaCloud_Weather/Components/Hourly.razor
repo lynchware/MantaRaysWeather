@@ -2,29 +2,32 @@
 @inject IHttpClientFactory _clientFactory
 @inject IForecastAPIService _forecastService
 
-<table>
-    <tr>
+<div class="forecast-container">
+    <div class="forecast-subcontainer">
         @for(int i = currentStartIndex; i < currentStartIndex + 5 && i < Forecast.Properties.Periods.Length; i++)
         {
-            <td>
-                <div class="d-flex flex-column">
-                    <div class="d-flex justify-content-center">
-                        <h5>@ConvertToHourDisplay(Forecast.Properties.Periods[i].StartTime)</h5>
-                    </div>
-                    <div class="d-flex justify-content-center">
-                        <img src="@Forecast.Properties.Periods[i].Icon" alt="Weather Icon" />
-                    </div>
-                    <div class="d-flex justify-content-center">
-                        <p>@Forecast.Properties.Periods[i].ShortForecast</p>
-                    </div>
-                    <div class="d-flex justify-content-center">
-                        <p>@($"{Forecast.Properties.Periods[i].Temperature}\u00B0{Forecast.Properties.Periods[i].TemperatureUnit}")</p>
-                    </div>
+            <div class="forecast-period">
+                <div class="forecast-header">
+                    <h5>@ConvertToHourDisplay(Forecast.Properties.Periods[i].StartTime)</h5>
                 </div>
-            </td>
+                <div class="forecast-image">
+                    <img src="@Forecast.Properties.Periods[i].Icon" alt="Weather Icon" />
+                </div>
+                <div class="forecast-wind">
+                    <p>@Forecast.Properties.Periods[i].ShortForecast</p>
+                </div>
+                <div class="forecast-wind">
+                    <i class="bi bi-wind"></i>@($" {Forecast.Properties.Periods[i].WindDirection} {Forecast.Properties.Periods[i].WindSpeed}")
+                </div>
+
+                <div class="lowforecast-temp">
+                    <img src="img/dewpointIcon.png" alt="dew icon" style="width: 1rem">
+                    <strong>@($"{Forecast.Properties.Periods[i].Temperature}\u00B0{Forecast.Properties.Periods[i].TemperatureUnit}")</strong>
+                </div>
+            </div>
         }
-    </tr>
-</table>
+    </div>
+</div>
 <div class="d-flex justify-content-between">
     <button @onclick="MoveToPreviousPeriods"><i class="oi oi-arrow-left"></i></button>
     <button @onclick="MoveToNextPeriods"><i class="oi oi-arrow-right"></i></button>

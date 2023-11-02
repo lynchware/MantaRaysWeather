@@ -223,27 +223,29 @@ h2 {
     background: var(--bg-gradient);
     position: relative;
     height: 90vh;
+
 }
 
     .forecast-container {
         display: flex;
         padding: 2rem;
         justify-content: center;
+        width: 97vw;
     }
     .forecast-subcontainer {
         display: flex;
-        flex-wrap: wrap;
         flex-direction: row;
-        justify-content: center;
-        border: 2px groove yellow;
+        justify-content: flex-start;
+        border: 4px groove yellow;
         background-color: white;
+        overflow-x: auto !important;
     }
         .forecast-period {
             flex-direction: column;
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-start;
             align-items: center;
-            padding: 3px;
+            padding: 5px 15px;
         }
         .forecast-header, forecast-image, forecast-temp{
             flex: 1;
@@ -253,16 +255,20 @@ h2 {
         .forecast-image{
             padding: 5px;
         }
-        .highforecast-temp{
-            font-size: 1rem;
-            font-weight: 700;
-            color: red;
+        forecast-wind{
+            font-size: 0.6rem;
+            max-width: 6rem;
         }
-        .lowforecast-temp {
+        .highforecast-temp, .lowforecast-tem{
             font-size: 1rem;
-            font-weight: 700;
-            color: var(--primary);
+            max-width: 6rem;
         }
+            .highforecast-temp{
+                color: red; 
+            }
+            .lowforecast-temp {
+                color: var(--primary);
+            }
 
 
 /*Table Styles*/
