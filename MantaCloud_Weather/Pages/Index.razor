@@ -4,51 +4,50 @@
 @inject IHttpClientFactory _clientFactory
 @inject IForecastAPIService _forecastService
 @using MantaRays_Weather.Components
-
-<div class="inputHeader">
-    <InputNumber placeholder="Enter a ZipCode" class="p-2" @bind-Value="zipCode" />
-    <button class="mx-2 btn btn-primary" @onclick="() => FetchWeatherForecast(zipCode.ToString())">Get Forecast</button>
-</div>
+    
 @if (forecast is null)
-{ 
-    @if (!string.IsNullOrEmpty(errorString))
-    {
-        <h3>Loading...</h3>
-        <p class="alert-danger">@errorString</p>
-    }
-    @if(isLoading)
-    {
-        <h3>Loading...</h3>
-    }
+{
+    <StartPage 
+        ErrorString="@errorString"
+        IsLoading="@isLoading"
+
+        OnZipCodeEntered="@SetZipCodeHandler">
+    </StartPage>
 }
 else
-{    
-    <div class="nav-tabs">
-        <button @onclick="() => SetSelectedTab(Tabs.Today)"
-                class="tab-button @(SelectedTab == Tabs.Today ? "active" : string.Empty)">
-            Today
+{
+    <InputHeader 
+        ErrorString="@errorString"
+        IsLoading="@isLoading"
+        OnZipCodeEntered="@SetZipCodeHandler">
+    </InputHeader>
+
+   <div class="currentHeader">
+        <div class="d-flex justify-content-between">
+            <h2 id="headline">@(city) forecast for @(forecast.Properties.Updated.DayOfWeek) @($"{forecast.Properties.Updated.Date.Day}{GetDateSuffix(forecast.Properties.Updated.Date.Day)}")</h2>
+        </div>
+        <div class="currentForecast">
+        </div>
+    </div> 
+    <div class="waveTabs">
+        <button @onclick="() => SetSelectedTab(Tabs.Daily)"
+                class="tab-button @(SelectedTab == Tabs.Daily ? "active" : string.Empty)">
+            Daily
         </button>
         <button @onclick="() => SetSelectedTab(Tabs.Hourly)"
                 class="tab-button @(SelectedTab == Tabs.Hourly ? "active" : string.Empty)">
             Hourly
         </button>
-        <button @onclick="() => SetSelectedTab(Tabs.Daily)"
-                class="tab-button @(SelectedTab == Tabs.Daily ? "active" : string.Empty)">
-            Daily
-        </button>
     </div>
     <div class="forecastWrapper">
-        @if (SelectedTab == Tabs.Today)
-        {
-            <Today ErrorString="errorString" />
-        }
-        else if (SelectedTab == Tabs.Hourly)
+        
+        @if (SelectedTab == Tabs.Hourly)
         {
             <Hourly Forecast="hourlyForecast" ErrorString="errorString" />
         }
         else if (SelectedTab == Tabs.Daily)
         {
-            <Daily Forecast="forecast" ErrorString="errorString" />
+            <Daily Forecast="forecast" ErrorString="errorString" City="@city"/>
         }
     </div>
 }
@@ -61,13 +60,11 @@ else
     private Tabs SelectedTab { get; set; } = Tabs.Daily;
 
     private int? zipCode = null;
+    private string city = "";
     private string errorString = "";  
     private bool isLoading = false;
 
-    protected override async Task OnInitializedAsync()
-    {
-
-    }
+    private bool startAnimation = false;
 
     private async Task FetchWeatherForecast(string zip)
     {
@@ -77,13 +74,26 @@ else
             return;
         }
         isLoading = true;
-        forecast = await _forecastService.GetForecastByZip<DailyForecast>(zip, ForecastType.Daily);
-        if (forecast == null)
+        var dayResult = await _forecastService.GetForecastByZip<DailyForecast?>(zip, ForecastType.Daily);
+
+        if (!dayResult.IsSuccess || dayResult.Data == null)
         {
-            errorString = "Failed to fetch Weather Forecast.";
+            errorString = dayResult.ErrorMessage ?? "Failed to fetch Weather Forecast.";
             return;
         }
-        hourlyForecast = await _forecastService.GetForecastByZip<HourlyForecast>(zip, ForecastType.Hourly);
+        city = string.IsNullOrEmpty(dayResult.City) ? "" : dayResult.City.Split(',')[0].Trim();
+
+        forecast = dayResult.Data;
+
+        var hourResult = await _forecastService.GetForecastByZip<HourlyForecast?>(zip, ForecastType.Hourly);
+
+        if (!hourResult.IsSuccess || hourResult.Data == null)
+        {
+            errorString = hourResult.ErrorMessage ?? "Failed to fetch Weather Forecast.";
+            return;
+        }
+
+        hourlyForecast = hourResult.Data;
         isLoading = false;
 
         errorString = "";
@@ -99,5 +109,30 @@ else
     {
         SelectedTab = tab;
     }
+
+    private string GetDateSuffix(int day)
+    {
+        switch (day)
+        {
+            case 1:
+            case 21:
+            case 31:
+                return "st";
+            case 2:
+            case 22:
+                return "nd";
+            case 3:
+            case 23:
+                return "rd";
+            default:
+                return "th";
+        }
+    }
+
+    public async Task SetZipCodeHandler(string zip)
+    {
+        await FetchWeatherForecast(zip);
+    } 
+
 
 }

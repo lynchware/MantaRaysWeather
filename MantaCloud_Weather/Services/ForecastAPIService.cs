@@ -4,6 +4,7 @@ using MantaRays_Weather.Models.Daily;
 using MantaRays_Weather.Models.Hourly;
 using MantaRays_Weather.Enums;
 using Microsoft.AspNetCore.Http.HttpResults;
+using MantaRays_Weather.Models;
 
 namespace MantaRays_Weather.Services
 {
@@ -24,145 +25,106 @@ namespace MantaRays_Weather.Services
             _configuration = configuration;
         }
 
-        public async Task<T> GetForecastByZip<T>(string zip, ForecastType type)
+        public async Task<ApiResult<T?>> GetForecastByZip<T>(string zip, ForecastType type)
+            where T : class
         {
-            GeoLocation geoLocation = await GetGeoLocation(zip);
+            var result = new ApiResult<T>
+            {
+                IsSuccess = true
+            };
+
+            GeoLocation? geoLocation = await GetGeoLocation(zip);
             if (geoLocation == null)
             {
-                _logger.LogError("Failed to fetch GeoLocation.");
-                throw new Exception("Failed to fetch GeoLocation.");
+                return FailedResult<T>($"Failed to fetch GeoLocation for zip: {zip}");
             }
 
             var coordinates = geoLocation.results?.FirstOrDefault();
             if (coordinates == null)
             {
-                _logger.LogError("GeoLocation results are empty.");
-                throw new Exception("GeoLocation results are empty.");
+                return FailedResult<T>("GeoLocation results are empty.");
             }
-
-            OfficeGridPoints gridPoints = await GetGridPoints(
+            result.City = coordinates.formatted_address; 
+            OfficeGridPoints? gridPoints = await GetGridPoints(
                             coordinates.geometry.Location.Lat.ToString(),
                             coordinates.geometry.Location.Lng.ToString());
             if (gridPoints == null)
             {
-                _logger.LogError("Failed to fetch Grid Points.");
-                throw new Exception("Failed to fetch Grid Points.");
+                return FailedResult<T>("Failed to fetch Grid Points.");
             }
 
             string forecastUrl = type == ForecastType.Daily ? gridPoints.Forecast : gridPoints.ForecastHourly;
-            T forecast = await GetForecast<T>(forecastUrl);
-            if (forecast == null)
+            
+            var forecastResult = await GetForecast<T>(forecastUrl);
+            if (forecastResult == null)
             {
-                _logger.LogError("Failed to fetch Weather Forecast.");
+                return FailedResult<T>($"Failed to fetch {type} forecast after 3 unsuccessful attempts");
             }
+            result.Data = forecastResult;
 
-            return forecast;
+            return result;
         }
 
-        private async Task<T> GetForecast<T>(string url)
+        private async Task<T?> GetForecast<T>(string url)
+            where T : class
         {
-            T forecast = default(T);
             var httpClient = _httpClientFactory.CreateClient("NationalWeatherService");
             int retries = 3;
 
-            while(retries > 0)
+            while (retries > 0)
             {
                 try
                 {
-                    forecast = await httpClient.GetFromJsonAsync<T>(url);
-                    if(forecast != null)
+                    var forecast = await httpClient.GetFromJsonAsync<T>(url);
+                    if (forecast != null)
                     {
-                        break;
+                        return forecast;
                     }
                 }
                 catch (Exception ex)
                 {
                     _logger.LogWarning($"Will retry calling api as there was an error getting the forecast: {ex.Message}");
                     retries--;
+
                     if (retries == 0)
                     {
                         _logger.LogError($"After 3 retries The API would not deliver our forecast: {ex.Message}");
-                        throw new Exception($"There was an error getting our forecast: {ex.Message}");
+                        return null;
                     }
                 }
             }
 
-            return forecast;
-        }   
+            return null;
+        }
 
-        private async Task<GeoLocation> GetGeoLocation(string zip)
+        private async Task<GeoLocation?> GetGeoLocation(string zip)
         {
-            GeoLocation geoLocation = null;
             var httpClient = _httpClientFactory.CreateClient("GeoCode");
             var geoApiKey = _configuration["APIs:GeoCode:Key"];
 
             var completeUrl = $"{httpClient.BaseAddress}json?address={zip}&key={geoApiKey}";
 
-            try
-            {
-                geoLocation = await httpClient.GetFromJsonAsync<GeoLocation>(completeUrl);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"There was an error getting our GeoLocation: {ex.Message}");
-            }
-
-            return geoLocation;
+            return await httpClient.GetFromJsonAsync<GeoLocation>(completeUrl);
         }
 
-        private async Task<OfficeGridPoints> GetGridPoints(string lat, string lon)
+        private async Task<OfficeGridPoints?> GetGridPoints(string lat, string lon)
         {
-            OfficeGridPointsResponse response = new(); //Forecast & hourly forecast urls are in this response
-
             var httpClient = _httpClientFactory.CreateClient("NWSPointLocation");
             var completeUrl = $"{httpClient.BaseAddress}{lat},{lon}";
-            try
-            {
-                response = await httpClient.GetFromJsonAsync<OfficeGridPointsResponse>(completeUrl);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"There was an error getting our grid points: {ex.Message}");
-            }
 
-            return response.properties;
+            return (await httpClient.GetFromJsonAsync<OfficeGridPointsResponse>(completeUrl))?.properties;
         }
 
-        //I may not need this as the data returned from the grid points includes the forecast urls. 
-        private async Task<DailyForecast> GetDailyForecast(string url)
+
+        private ApiResult<T> FailedResult<T>(string errorMessage) where T : class
         {
-            DailyForecast forecast = null;
-            var httpClient = _httpClientFactory.CreateClient("NationalWeatherService");
-
-            try
+            _logger.LogError("ApplicationInsights", errorMessage);
+            return new ApiResult<T>
             {
-                forecast = await httpClient.GetFromJsonAsync<DailyForecast>(url);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"There was an error getting our forecast: {ex.Message}");
-            }
-
-            return forecast;
+                IsSuccess = false,
+                ErrorMessage = errorMessage
+            };
         }
-       
-        private async Task<HourlyForecast> GetHourlyForecast(string url)
-        {
-            HourlyForecast forecast = null;
-            var httpClient = _httpClientFactory.CreateClient("NationalWeatherService");
-
-            try
-            {
-                forecast = await httpClient.GetFromJsonAsync<HourlyForecast>(url);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"There was an error getting our forecast: {ex.Message}");
-            }
-
-            return forecast;
-        }
-
-
     }
 }
+

@@ -1,0 +1,82 @@
+﻿@inject IJSRuntime JS;
+@using Microsoft.AspNetCore.Components
+@using Microsoft.AspNetCore.Components.Web
+@using System.Text.RegularExpressions;
+
+<div class="inputHeader">
+    <img id="titleImage" src="/img/MantaRaysTitle.svg" alt="Logo Title">
+    <div class="d-flex">
+        <input @ref="zipInputElement"
+               id="zipInputsm"
+               type="number"
+               placeholder="Enter a ZipCode"
+        @bind="zipCode"
+        @oninput="OnInput"
+        @onkeydown="HandleKeyDown" />
+
+        <button class="mx-2 btn btn-primary" @onclick="() => SetZipCode(zipCode?.ToString())">Get Forecast</button>
+    </div>
+    <img id="@((!startAnimation) ? "logoImageNone" : "logoImage")" src="/img/MantaRays_Logo.svg" alt="Manta Ray Logo">
+</div>
+@if (!string.IsNullOrEmpty(ErrorString))
+{
+    <p class="alert-danger">@ErrorString</p>
+}
+@if (IsLoading)
+{
+    <h3>Loading...</h3>
+}
+@code {
+    [Parameter]
+    public string? ErrorString { get; set; }
+    [Parameter]
+    public bool IsLoading { get; set; }
+    [Parameter]
+    public EventCallback<string> OnZipCodeEntered { get; set; }
+    private int? zipCode = null;
+    private bool startAnimation = false;
+
+    private ElementReference zipInputElement;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            startAnimation = true;
+            await zipInputElement.FocusAsync();
+            StateHasChanged();
+        }
+    }
+
+    private void OnInput(ChangeEventArgs e)
+    {
+        var zipCodePattern = @"^\d{5}$";
+
+        var input = e.Value?.ToString();
+
+        if (!string.IsNullOrWhiteSpace(input) && Regex.IsMatch(input, zipCodePattern))
+        {
+            zipCode = int.Parse(input);
+        }
+        else
+        {
+            zipCode = null;
+        }
+    }
+
+    private async Task HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            await SetZipCode(zipCode?.ToString());
+        }
+    }
+
+    public async Task SetZipCode(string zipCode)
+    {
+        if (!string.IsNullOrWhiteSpace(zipCode))
+        {
+            await OnZipCodeEntered.InvokeAsync(zipCode);
+        }
+    }
+}

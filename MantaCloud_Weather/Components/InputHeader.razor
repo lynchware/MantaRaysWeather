@@ -1,0 +1,33 @@
+﻿@if (!string.IsNullOrEmpty(ErrorString))
+{
+    <p class="alert-danger errorString">@ErrorString</p>
+}
+@if (IsLoading)
+{
+    <p class="loading">Loading...</p>
+}
+<div class="inputHeaderSm">
+    <img src="img/MantaRaysTitle.svg" id="headerTitle" alt="MantaRays Logo" />
+    <form @onsubmit="SetZipCode">
+        <InputNumber type="number" placeholder="Enter a ZipCode" @bind-Value="zipCode" autofocus />
+        <button class="searchBtn">
+            <i class="bi bi-binoculars-fill"></i>
+        </button>
+    </form>
+</div>
+
+
+@code {
+    [Parameter]
+    public string? ErrorString { get; set; }
+    [Parameter]
+    public bool IsLoading { get; set; }
+    [Parameter]
+    public EventCallback<string> OnZipCodeEntered { get; set; }
+    private int? zipCode = null;
+
+    public async Task SetZipCode()
+    {
+        await OnZipCodeEntered.InvokeAsync(zipCode.ToString());
+    }
+}
