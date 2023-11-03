@@ -236,22 +236,16 @@ h2 {
             display: flex;
             justify-content: flex-start;
             align-items: center;
-            padding: 5px 15px;
+            padding: 1px 15px;
         }
-        .forecast-header, forecast-image, forecast-temp{
+        .forecast-period > div{
             flex: 1;
             text-align: center;
             min-width: 120px;
-        }
-        .forecast-image{
-            padding: 5px;
+            padding: 2px 1px 5px 1px;
         }
         forecast-wind{
             font-size: 0.6rem;
-            max-width: 6rem;
-        }
-        .highforecast-temp, .lowforecast-tem{
-            font-size: 1rem;
             max-width: 6rem;
         }
             .highforecast-temp{
