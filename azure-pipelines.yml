@@ -32,3 +32,10 @@ steps:
   inputs:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
+- task: AzureRmWebAppDeployment@4
+  inputs:
+    ConnectionType: 'AzureRM'
+    azureSubscription: 'DevOp To Azure MantaRays-ResourceGroup'
+    appType: 'webApp'
+    WebAppName: 'MantaRaysWeather'
+    packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
