@@ -10,7 +10,7 @@
 <div class="inputHeaderSm">
     <img src="img/MantaRaysTitle.svg" id="headerTitle" alt="MantaRays Logo" />
     <form @onsubmit="SetZipCode">
-        <InputNumber type="number" placeholder="Enter a ZipCode" @bind-Value="zipCode" autofocus />
+        <InputNumber type="number" placeholder="Enter a ZipCode" @bind-Value="ZipCode" />
         <button class="searchBtn">
             <i class="bi bi-binoculars-fill"></i>
         </button>
@@ -25,7 +25,8 @@
     public bool IsLoading { get; set; }
     [Parameter]
     public EventCallback<string> OnZipCodeEntered { get; set; }
-    private int? zipCode = null;
+    [Parameter]
+    public int? ZipCode { get; set; } = null;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -37,6 +38,6 @@
 
     public async Task SetZipCode()
     {
-        await OnZipCodeEntered.InvokeAsync(zipCode.ToString());
+        await OnZipCodeEntered.InvokeAsync(ZipCode.ToString());
     }
 }

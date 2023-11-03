@@ -112,20 +112,18 @@ h2 {
         margin: 10px;
     }
 .inputHeaderSm {
-    display: flex; /* Flexbox container */
-    flex-direction: row; /* Stack children vertically on narrow screens */
-    align-items: center; /* Center children horizontally */
-    justify-content: space-between; /* Center children vertically */
-    flex-wrap: wrap; /* Allow items to wrap */
-    gap: 10px; /* Add space between flex items */
-    padding: 10px; /* Add padding to the container */
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 10px;
 }
 
 #headerTitle {
     margin-top: -2px;
-    width: 10rem; /* Fixed width as per your requirement */
-    margin-left: auto;
-    margin-right: auto;
+    width: 10rem;
 }
 
 .inputHeaderSm form {
@@ -134,12 +132,7 @@ h2 {
     align-items: center; /* Align form elements vertically */
     gap: 10px; /* Add space between form elements */
 }
-@media only screen and (max-width: 768px){
-    .inputHeaderSm form {
-		margin-left: auto;
-        margin-right:auto;
-	}
-}
+
 .inputHeaderSm input {
     height: 3rem; /* Set fixed height for input */
     min-width: 12.2rem; /* Minimum width for the input */
@@ -190,10 +183,8 @@ h2 {
         border-width: 1px;
         border-color: #279bab;
         box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
-        /*clip-path: polygon(0% 0%, 100% 0%, 100% 75%, 75% 100%, 25% 100%, 0% 75%);*/
         border-radius: 113px 230px 0px 0px / 90px 150px 0px 0px;
         background-color: var(--primary);
-        /*box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);*/
         transition: all 0.2s ease-in-out;
         font-size: 1rem;
         font-weight: 700;
@@ -223,9 +214,9 @@ h2 {
     background: var(--bg-gradient);
     position: relative;
     height: 90vh;
-
+    margin-left: -32px;
+    margin-right: -24px;
 }
-
     .forecast-container {
         display: flex;
         padding: 2rem;
@@ -269,51 +260,32 @@ h2 {
             .lowforecast-temp {
                 color: var(--primary);
             }
-
-
-/*Table Styles*/
-/*.forecast-container {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-}
-table {
-	border-collapse: collapse;
-	width: 100%;
-    background-color: white;
-}
-td, th {
-	padding: 0.8rem;
-}
-th {
-    padding-top: 0.5rem;
-	padding-bottom: 0.5rem;
-	text-align: left;
-	background-color: antiquewhite;
-	color: darkgreen;
-}
-i.bi{
-    font-size: 2rem;
-	color: darkgreen;
-}
-@media (max-width: 700px) {
-    th {
-        display: none;
+/*---Mobile Specific---*/
+@media only screen and (max-width: 768px) {
+    .waveTabs button {
+        height: 2.8rem;
+        width: 9rem;
     }
-
-    td {
-        display: grid;
-        padding: 0.5rem 1rem;
-        gap: 0.5rem;*/
-        /*This is used to seperate header and data to 2 columns for better readability.*/
-        /*grid-template-columns: 15ch auto;
+    .inputHeaderSm { /*fixes the issue with being off page.  also centers on mobile*/
+     max-width: 90vw;
+     justify-content: center;
     }
-    td::before {
-		content: attr(data-title) ": ";
-		font-weight: bold;
-		text-transform: capitalize;
+    .forecastWrapper { /*makes background go to ends of page*/
+        margin-left: -24px; 
+        margin-right: -24px;
+    }
+    .forecast-container {
+        padding: 0.5rem;
+        width: 100%;
+    }
+    .forecast-period {
+		padding: 10px 2px;
 	}
-}*/
+    .forecast-image > img {
+        width: 3rem;
+        padding: 2px;
+    }
+}
 
 /*Title Screen Animation*/
 
@@ -336,13 +308,12 @@ i.bi{
 
 #titleImage{
     width: 35vmin;
-    
 }
 #logoImage {
     width: 95vmin;
-    animation: moveAndRotateLogo 5s ease-in-out forwards;
+    animation: moveAndRotateLogo 3s ease-in-out forwards;
 }
-#logoImageNone{
+#display-none{
     display: none;
 }
 #zipInputsm {

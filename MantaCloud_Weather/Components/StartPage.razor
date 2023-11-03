@@ -3,7 +3,7 @@
 @using Microsoft.AspNetCore.Components.Web
 @using System.Text.RegularExpressions;
 
-<div class="inputHeader">
+<div class="@((!startAnimation) ? "d-none" : "inputHeader")">
     <img id="titleImage" src="/img/MantaRaysTitle.svg" alt="Logo Title">
     <div class="d-flex">
         <input @ref="zipInputElement"
@@ -16,7 +16,7 @@
 
         <button class="mx-2 btn btn-primary" @onclick="() => SetZipCode(zipCode?.ToString())">Get Forecast</button>
     </div>
-    <img id="@((!startAnimation) ? "logoImageNone" : "logoImage")" src="/img/MantaRays_Logo.svg" alt="Manta Ray Logo">
+    <img id="@((!startAnimation) ? "display-none" : "logoImage")" src="/img/MantaRays_Logo.svg" alt="Manta Ray Logo">
 </div>
 @if (!string.IsNullOrEmpty(ErrorString))
 {
@@ -43,8 +43,8 @@
         if (firstRender)
         {
             startAnimation = true;
-            await zipInputElement.FocusAsync();
             StateHasChanged();
+            await zipInputElement.FocusAsync();
         }
     }
 
