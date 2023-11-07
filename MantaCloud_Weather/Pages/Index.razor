@@ -3,6 +3,7 @@
 @inject IConfiguration _config
 @inject IHttpClientFactory _clientFactory
 @inject IForecastAPIService _forecastService
+@inject ICookieStorageAccessor _cookieStorage
 @using MantaRays_Weather.Components
     
 @if (forecast is null)
@@ -10,7 +11,6 @@
     <StartPage 
         ErrorString="@errorString"
         IsLoading="@isLoading"
-
         OnZipCodeEntered="@SetZipCodeHandler">
     </StartPage>
 }
@@ -60,6 +60,22 @@ else
     private bool isLoading = false;
 
     private bool startAnimation = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var savedZip = await _cookieStorage.GetValueAsync<string>("zipCode");
+            if (!string.IsNullOrWhiteSpace(savedZip))
+            {
+                int.TryParse(savedZip, out int returnZip);
+                zipCode = returnZip;
+                await FetchWeatherForecast(savedZip);
+                StateHasChanged();
+            }
+        }
+
+    }
 
     private async Task FetchWeatherForecast(string zip)
     {
@@ -126,6 +142,7 @@ else
 
     public async Task SetZipCodeHandler(string zip)
     {
+        await _cookieStorage.SetValueAsync("zipCode", zip);
         await FetchWeatherForecast(zip);
     } 
 
