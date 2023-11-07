@@ -38,4 +38,5 @@ steps:
     azureSubscription: 'DevOp To Azure MantaRays-ResourceGroup'
     appType: 'webApp'
     WebAppName: 'MantaRaysWeather'
-    packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
+    package: '$(System.DefaultWorkingDirectory)/**/*.zip'
+
