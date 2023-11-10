@@ -13,6 +13,7 @@ builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnC
 builder.Services.AddServerSideBlazor();
 builder.Services.AddHttpClient();
 builder.Services.AddSingleton<IForecastAPIService, ForecastAPIService>();
+builder.Services.AddScoped<ICookieStorageAccessor, CookieStorageAccessor>();
 var insightsKey = builder.Configuration["ApplicationInsights:ConnectionString"];
 var apiConfigs = builder.Configuration.GetSection("APIs").GetChildren();
 
