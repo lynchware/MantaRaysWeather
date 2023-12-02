@@ -13,7 +13,7 @@
         public string Forecast { get; set; }
         public string ForecastHourly { get; set; }
         public string ForecastGridData { get; set; }
-        public string ObservationStations { get; set; }
+        public string ObservationStations { get; set; } //Call observation station
     }
 
 }

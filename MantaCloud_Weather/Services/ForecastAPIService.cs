@@ -2,6 +2,7 @@
 using System.Net.Http;
 using MantaRays_Weather.Models.Daily;
 using MantaRays_Weather.Models.Hourly;
+using MantaRays_Weather.Models.Current; 
 using MantaRays_Weather.Enums;
 using Microsoft.AspNetCore.Http.HttpResults;
 using MantaRays_Weather.Models;
@@ -52,6 +53,7 @@ namespace MantaRays_Weather.Services
             {
                 return FailedResult<T>("Failed to fetch Grid Points.");
             }
+            string observationStationURL = gridPoints.ObservationStations;
 
             string forecastUrl = type == ForecastType.Daily ? gridPoints.Forecast : gridPoints.ForecastHourly;
             
@@ -115,6 +117,16 @@ namespace MantaRays_Weather.Services
             return (await httpClient.GetFromJsonAsync<OfficeGridPointsResponse>(completeUrl))?.properties;
         }
 
+        private async Task<CurrentForecast?> GetCurrentForecast(string url)
+        {
+            var httpClient = _httpClientFactory.CreateClient("NationalWeatherService");
+            var stations = await httpClient.GetFromJsonAsync<Stations>(url);
+            var closestStation = stations.observationStations[0];
+            string append = "/observations/latest";
+            string completeUrl = closestStation + append;
+            return await httpClient.GetFromJsonAsync<CurrentForecast>(completeUrl);
+        }
+        
 
         private ApiResult<T> FailedResult<T>(string errorMessage) where T : class
         {

@@ -23,7 +23,8 @@ else
         OnZipCodeEntered="@SetZipCodeHandler">
     </InputHeader>
 
-    <!--Place Current Forecast Here once we have the graphics-->
+    
+
     <div class="waveTabs">
         <button @onclick="() => SetSelectedTab(Tabs.Daily)"
                 class="tab-button @(SelectedTab == Tabs.Daily ? "active" : string.Empty)">
@@ -76,7 +77,7 @@ else
         }
 
     }
-
+    //refactor this to cache the data.  Combind the two calls into one that returns a single model with both current, daily and hourly forecasts.
     private async Task FetchWeatherForecast(string zip)
     {
         if (zip.Length != 5)

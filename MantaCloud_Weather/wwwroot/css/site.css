@@ -209,6 +209,12 @@ h2 {
             background-color: rgb(48 104 137 / 89%);
             color: #fff;
         }
+.currentForecastContainer {
+    display:flex;
+    flex-direction: row;
+    justify-content:space-between;
+    align-items: center;
+}
 .forecastWrapper {
     background: rgb(43,96,131);
     background: var(--bg-gradient);
