@@ -64,7 +64,7 @@ namespace MantaRays_Weather.Services
             {
                 return FailedResult("Failed to fetch hourly forecast.");
             }
-            var currentForecast = await GetCurrentForecast(observationStationURL);
+            var currentForecast = await GetForecast<CurrentForecast>(observationStationURL);
             if (currentForecast == null)
             {
                 return FailedResult("Failed to fetch current forecast.");
