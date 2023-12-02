@@ -6,7 +6,7 @@ namespace MantaRays_Weather.Interfaces
 {
     public interface IForecastAPIService
     {
-        Task<ApiResult<T?>> GetForecastByZip<T>(string zip, ForecastType type) where T : class;
+        Task<ApiResult> GetForecastByZip(string zip);
 
     }
 }

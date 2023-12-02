@@ -26,10 +26,9 @@ namespace MantaRays_Weather.Services
             _configuration = configuration;
         }
 
-        public async Task<ApiResult<T?>> GetForecastByZip<T>(string zip, ForecastType type)
-            where T : class
+        public async Task<ApiResult> GetForecastByZip(string zip)
         {
-            var result = new ApiResult<T>
+            var result = new ApiResult
             {
                 IsSuccess = true
             };
@@ -37,13 +36,13 @@ namespace MantaRays_Weather.Services
             GeoLocation? geoLocation = await GetGeoLocation(zip);
             if (geoLocation == null)
             {
-                return FailedResult<T>($"Failed to fetch GeoLocation for zip: {zip}");
+                return FailedResult($"Failed to fetch GeoLocation for zip: {zip}");
             }
 
             var coordinates = geoLocation.results?.FirstOrDefault();
             if (coordinates == null)
             {
-                return FailedResult<T>("GeoLocation results are empty.");
+                return FailedResult("GeoLocation results are empty.");
             }
             result.City = coordinates.formatted_address; 
             OfficeGridPoints? gridPoints = await GetGridPoints(
@@ -51,18 +50,32 @@ namespace MantaRays_Weather.Services
                             coordinates.geometry.Location.Lng.ToString());
             if (gridPoints == null)
             {
-                return FailedResult<T>("Failed to fetch Grid Points.");
+                return FailedResult("Failed to fetch Grid Points.");
             }
             string observationStationURL = gridPoints.ObservationStations;
 
-            string forecastUrl = type == ForecastType.Daily ? gridPoints.Forecast : gridPoints.ForecastHourly;
-            
-            var forecastResult = await GetForecast<T>(forecastUrl);
-            if (forecastResult == null)
+            var dailyForecast = await GetForecast<DailyForecast>(gridPoints.Forecast);
+            if (dailyForecast == null)
             {
-                return FailedResult<T>($"Failed to fetch {type} forecast after 3 unsuccessful attempts");
+                return FailedResult("Failed to fetch daily forecast.");
             }
-            result.Data = forecastResult;
+            var hourlyForecast = await GetForecast<HourlyForecast>(gridPoints.ForecastHourly);
+            if (hourlyForecast == null)
+            {
+                return FailedResult("Failed to fetch hourly forecast.");
+            }
+            var currentForecast = await GetCurrentForecast(observationStationURL);
+            if (currentForecast == null)
+            {
+                return FailedResult("Failed to fetch current forecast.");
+            }
+            
+            result.Data = new CombinedForecast
+            {
+               Current = currentForecast,
+               Daily = dailyForecast,
+               Hourly = hourlyForecast
+            };
 
             return result;
         }
@@ -72,6 +85,14 @@ namespace MantaRays_Weather.Services
         {
             var httpClient = _httpClientFactory.CreateClient("NationalWeatherService");
             int retries = 3;
+
+            if (typeof(T) == typeof(CurrentForecast))
+            {
+                var stations = await httpClient.GetFromJsonAsync<Stations>(url);
+                var closestStation = stations.observationStations[0];
+                string append = "/observations/latest";
+                string completeUrl = closestStation + append;
+            }
 
             while (retries > 0)
             {
@@ -99,6 +120,16 @@ namespace MantaRays_Weather.Services
             return null;
         }
 
+        private async Task<CurrentForecast?> GetCurrentForecast(string url)
+        {
+            var httpClient = _httpClientFactory.CreateClient("NationalWeatherService");
+            var stations = await httpClient.GetFromJsonAsync<Stations>(url);
+            var closestStation = stations.observationStations[0];
+            string append = "/observations/latest";
+            string completeUrl = closestStation + append;
+            return await httpClient.GetFromJsonAsync<CurrentForecast>(completeUrl);
+        }
+
         private async Task<GeoLocation?> GetGeoLocation(string zip)
         {
             var httpClient = _httpClientFactory.CreateClient("GeoCode");
@@ -117,21 +148,10 @@ namespace MantaRays_Weather.Services
             return (await httpClient.GetFromJsonAsync<OfficeGridPointsResponse>(completeUrl))?.properties;
         }
 
-        private async Task<CurrentForecast?> GetCurrentForecast(string url)
-        {
-            var httpClient = _httpClientFactory.CreateClient("NationalWeatherService");
-            var stations = await httpClient.GetFromJsonAsync<Stations>(url);
-            var closestStation = stations.observationStations[0];
-            string append = "/observations/latest";
-            string completeUrl = closestStation + append;
-            return await httpClient.GetFromJsonAsync<CurrentForecast>(completeUrl);
-        }
-        
-
-        private ApiResult<T> FailedResult<T>(string errorMessage) where T : class
+        private ApiResult FailedResult(string errorMessage)
         {
             _logger.LogError("ApplicationInsights", errorMessage);
-            return new ApiResult<T>
+            return new ApiResult
             {
                 IsSuccess = false,
                 ErrorMessage = errorMessage

@@ -3,6 +3,7 @@
     public enum ForecastType
     {
         Daily,
-        Hourly
+        Hourly,
+        Current
     }
 }

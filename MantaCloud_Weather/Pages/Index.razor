@@ -6,7 +6,7 @@
 @inject ICookieStorageAccessor _cookieStorage
 @using MantaRays_Weather.Components
     
-@if (forecast is null)
+@if (dailyForecast is null)
 {
     <StartPage 
         ErrorString="@errorString"
@@ -43,14 +43,15 @@ else
         }
         else if (SelectedTab == Tabs.Daily)
         {
-            <Daily Forecast="forecast" ErrorString="errorString" City="@city"/>
+            <Daily Forecast="dailyForecast" ErrorString="errorString" City="@city"/>
         }
     </div>
 }
 
 
 @code {
-    private DailyForecast? forecast; 
+    private CurrentForecast? currentForecast;
+    private DailyForecast? dailyForecast; 
     private HourlyForecast? hourlyForecast;
     private enum Tabs { Today, Hourly, Daily };
     private Tabs SelectedTab { get; set; } = Tabs.Daily;
@@ -86,26 +87,19 @@ else
             return;
         }
         isLoading = true;
-        var dayResult = await _forecastService.GetForecastByZip<DailyForecast?>(zip, ForecastType.Daily);
-
-        if (!dayResult.IsSuccess || dayResult.Data == null)
+        var combinedResult = await _forecastService.GetForecastByZip(zip);
+        if (!combinedResult.IsSuccess || combinedResult.Data == null)
         {
-            errorString = dayResult.ErrorMessage ?? "Failed to fetch Weather Forecast.";
+            errorString = combinedResult.ErrorMessage ?? "Failed to fetch Weather Forecast.";
             return;
         }
-        city = string.IsNullOrEmpty(dayResult.City) ? "" : dayResult.City.Split(',')[0].Trim();
+        //Check this may only return the first word in the city name so New York would be New
+        city = string.IsNullOrEmpty(combinedResult.City) ? "" : combinedResult.City.Split(',')[0].Trim();
 
-        forecast = dayResult.Data;
+        currentForecast = combinedResult.Data.Current;
+        dailyForecast = combinedResult.Data.Daily;
+        hourlyForecast = combinedResult.Data.Hourly
 
-        var hourResult = await _forecastService.GetForecastByZip<HourlyForecast?>(zip, ForecastType.Hourly);
-
-        if (!hourResult.IsSuccess || hourResult.Data == null)
-        {
-            errorString = hourResult.ErrorMessage ?? "Failed to fetch Weather Forecast.";
-            return;
-        }
-
-        hourlyForecast = hourResult.Data;
         isLoading = false;
 
         errorString = "";
@@ -113,7 +107,7 @@ else
 
     private void Clear()
     {
-        forecast = null;
+        dailyForecast = null;
         errorString = "";
     }
 
