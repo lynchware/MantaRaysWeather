@@ -21,10 +21,10 @@ else
                             <strong>@(currentDay != lastDay ? currentDay : lastDay + " Night")</strong>
                         </div>
                         <div class="forecast-image">
-                            <img src="@day.Icon" alt="@day.ShortForecast" />
+                            <img src="@($"/img/{GetForecastImage(day.ShortForecast, day.IsDaytime)}")" width="160" alt="@day.ShortForecast" />
                         </div>
                         <div class="@(currentDay != lastDay ? "high" : "low")forecast-temp">
-                            <img src="img/dewpointIcon.png" alt="dew icon" style="width: 1rem">
+                            <img src="/img/dewpointIcon.png" alt="dew icon" style="width: 1rem">
                             <strong>@(currentDay != lastDay ? "High" : "Low") </strong>
                             <span>@($"{day.Temperature}\u00B0{day.TemperatureUnit}")</span>
                         </div>
@@ -44,6 +44,58 @@ else
     [Parameter]
     public string City { get; set; } = "";
 
+    private string GetForecastImage(string forecastDesc, bool isDaytime)
+    {
+        if (string.IsNullOrEmpty(forecastDesc))
+        {
+            return "default-image.svg"; // Replace with your default image
+        }
 
+        forecastDesc = forecastDesc.ToLower();
+
+        // Check for specific weather conditions
+        if (forecastDesc.Contains("sunny") || forecastDesc.Contains("clear"))
+        {
+            return isDaytime ? "Sunny.svg" : "Night_Clear.svg";
+        }
+        if (forecastDesc.Contains("mostly cloudy") || forecastDesc.Contains("partly sunny"))
+        {
+            return isDaytime ? "Mostly_Cloudy.svg" : "Night_Mostly_Cloudy.svg";
+        }
+        if (forecastDesc.Contains("partly cloudy") || forecastDesc.Contains("mostly sunny"))
+        {
+            return isDaytime ? "Partly_Cloudy_Icon.svg" : "Night_Mostly_Clear.svg";
+        }
+        if(forecastDesc.Contains("cloudy"))
+        {
+            return "Cloudy_Icon.svg";
+        }
+        if (forecastDesc.Contains("thunderstorm"))
+        {
+            return "Storm_Icon.svg";
+        }
+        if (forecastDesc.Contains("snowstorm") || forecastDesc.Contains("blizzard") || forecastDesc.Contains("wind") || forecastDesc.Contains("breezy"))
+        {
+            return "Blizzard.svg";
+        }
+        if (forecastDesc.Contains("snow"))
+        {
+            return "Flurries_Icon.svg";
+        }
+        if (forecastDesc.Contains("rain") && forecastDesc.Contains("snow"))
+        {
+            return "Sleet_Icon.svg";
+        }
+        if (forecastDesc.Contains("rain"))
+        {
+            return "Rain_Icon.svg";
+        }
+        if (forecastDesc.Contains("mist") || forecastDesc.Contains("foggy") || forecastDesc.Contains("hazy"))
+        {
+            return "Foggy_Icon.svg";
+        }
+
+        return "unknown.svg";
+    }
     //Method to return current day of pervious day + "Night" for currentDay that is null.
 }

@@ -1,10 +1,50 @@
 ﻿<div class="currentForecastContainer">
     <div class="currentForecastImage">
-       
+        <img src="@($"img/{iconUrl}")" alt="Current Forecast icon image" />
+    </div>
+    <div class="currentData">
+        <h1>@($"{Forecast.properties.temperature.value}")&deg;F</h1>
+        <h3>@(Forecast.properties.textDescription)</h3>
+        <div class="wind">
+            <img src="img/wind.svg" alt="wind icon" style="width: 1rem">
+            <span>@($"{Forecast.properties.windDirection.value}{Forecast.properties.windSpeed.value} mph")</span>
+        </div>
+        <div class="humidity">
+            <img src="img/Humidity.svg" alt="humidity icon" style="width: 1rem">
+            <span>@($"{Forecast.properties.relativeHumidity.value}")%</span>
+        </div>
+        <div class="currentTemp">
+            <div>
+                <img src="img/up_arrow_icon.svg" alt="high temp icon" />
+                <span>@($"{HighTemp}\u00B0")F</span>
+            </div>
+            <div>
+                <img src="img/down_arrow_icon.svg" alt="low temp icon" />
+                <span>@($"{LowTemp}\u00B0")F</span>
+            </div>
+        </div>
     </div>
 </div>
 
-@code {
-    [Parameter]
-    public string? ErrorString { get; set; }
-}
+    @code {
+        [Parameter]
+        public string? ErrorString { get; set; }
+        [Parameter]
+        public CurrentForecast? Forecast { get; set; }
+        [Parameter]
+        public string? City { get; set; }
+        [Parameter]
+        public int HighTemp { get; set; } = 0;
+        [Parameter]
+        public int LowTemp { get; set; } = 0;
+        string? iconUrl = null;
+
+        protected override async Task OnParametersSetAsync()
+        {
+            if (Forecast is not null)
+            {
+             iconUrl = "MantaRayz_Logo_Clouds.svg";
+            }
+        }
+    }
+

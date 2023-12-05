@@ -5,25 +5,28 @@
 @inject IForecastAPIService _forecastService
 @inject ICookieStorageAccessor _cookieStorage
 @using MantaRays_Weather.Components
-    
+
 @if (dailyForecast is null)
 {
-    <StartPage 
-        ErrorString="@errorString"
-        IsLoading="@isLoading"
-        OnZipCodeEntered="@SetZipCodeHandler">
+    <StartPage ErrorString="@errorString"
+               IsLoading="@isLoading"
+               OnZipCodeEntered="@SetZipCodeHandler">
     </StartPage>
 }
 else
 {
-    <InputHeader 
-        ErrorString="@errorString"
-        IsLoading="@isLoading"
-        ZipCode ="@zipCode"
-        OnZipCodeEntered="@SetZipCodeHandler">
+    <InputHeader ErrorString="@errorString"
+                 IsLoading="@isLoading"
+                 ZipCode="@zipCode"
+                 OnZipCodeEntered="@SetZipCodeHandler">
     </InputHeader>
 
-    
+    <Current Forecast="currentForecast"
+             ErrorString="@errorString"
+             City="@city"
+             HighTemp="@dayHigh"
+             LowTemp="@dayLow">
+    </Current>
 
     <div class="waveTabs">
         <button @onclick="() => SetSelectedTab(Tabs.Daily)"
@@ -36,14 +39,14 @@ else
         </button>
     </div>
     <div class="forecastWrapper">
-        
+
         @if (SelectedTab == Tabs.Hourly)
         {
             <Hourly Forecast="hourlyForecast" ErrorString="errorString" />
         }
         else if (SelectedTab == Tabs.Daily)
         {
-            <Daily Forecast="dailyForecast" ErrorString="errorString" City="@city"/>
+            <Daily Forecast="dailyForecast" ErrorString="errorString" City="@city" />
         }
     </div>
 }
@@ -51,16 +54,17 @@ else
 
 @code {
     private CurrentForecast? currentForecast;
-    private DailyForecast? dailyForecast; 
+    private DailyForecast? dailyForecast;
     private HourlyForecast? hourlyForecast;
     private enum Tabs { Today, Hourly, Daily };
     private Tabs SelectedTab { get; set; } = Tabs.Daily;
 
     private int? zipCode = null;
+    private int dayHigh = 0;
+    private int dayLow = 0;
     private string city = "";
-    private string errorString = "";  
+    private string errorString = "";
     private bool isLoading = false;
-
     private bool startAnimation = false;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -99,7 +103,11 @@ else
         currentForecast = combinedResult.Data.Current;
         dailyForecast = combinedResult.Data.Daily;
         hourlyForecast = combinedResult.Data.Hourly;
-
+        //CurrentForecast for some reason is in Celsius.  Convert to Fahrenheit
+        currentForecast.properties.temperature.value = CelsiusToFahrenheit(currentForecast.properties.temperature.value);
+        currentForecast.properties.windSpeed.value = KphToMph(currentForecast.properties.windSpeed.value);
+        dayHigh = dailyForecast?.Properties.Periods.OrderBy(x => x.Number).FirstOrDefault(x => x.IsDaytime)?.Temperature ?? 0;
+        dayLow = dailyForecast?.Properties.Periods.OrderBy(x => x.Number).FirstOrDefault(x => !x.IsDaytime)?.Temperature ?? 0;
         isLoading = false;
 
         errorString = "";
@@ -109,6 +117,16 @@ else
     {
         dailyForecast = null;
         errorString = "";
+    }
+
+    private static int CelsiusToFahrenheit(float celsius)
+    {
+        return (int)Math.Round(celsius * 1.8 + 32);
+    }
+
+    public static float KphToMph(float kph)
+    {
+        return kph * 0.621371f;
     }
 
     private void SetSelectedTab(Tabs tab)
@@ -139,7 +157,7 @@ else
     {
         await _cookieStorage.SetValueAsync("zipCode", zip);
         await FetchWeatherForecast(zip);
-    } 
+    }
 
 
 }

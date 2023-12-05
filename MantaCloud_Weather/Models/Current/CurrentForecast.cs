@@ -136,6 +136,10 @@
     {
         public string unitCode { get; set; }
         public float value { get; set; }
+        public int RoundedValue
+        {
+            get { return (int)Math.Round(value); }
+        }
         public string qualityControl { get; set; }
     }
 

@@ -91,7 +91,7 @@ namespace MantaRays_Weather.Services
                 var stations = await httpClient.GetFromJsonAsync<Stations>(url);
                 var closestStation = stations.observationStations[0];
                 string append = "/observations/latest";
-                string completeUrl = closestStation + append;
+                url = closestStation + append;
             }
 
             while (retries > 0)
