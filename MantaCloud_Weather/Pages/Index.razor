@@ -106,6 +106,7 @@ else
         //CurrentForecast for some reason is in Celsius.  Convert to Fahrenheit
         currentForecast.properties.temperature.value = CelsiusToFahrenheit(currentForecast.properties.temperature.value);
         currentForecast.properties.windSpeed.value = KphToMph(currentForecast.properties.windSpeed.value);
+        currentForecast.properties.windDirection.direction = ConvertDegreesToCompass(currentForecast.properties.windDirection.value);
         dayHigh = dailyForecast?.Properties.Periods.OrderBy(x => x.Number).FirstOrDefault(x => x.IsDaytime)?.Temperature ?? 0;
         dayLow = dailyForecast?.Properties.Periods.OrderBy(x => x.Number).FirstOrDefault(x => !x.IsDaytime)?.Temperature ?? 0;
         isLoading = false;
@@ -124,7 +125,7 @@ else
         return (int)Math.Round(celsius * 1.8 + 32);
     }
 
-    public static float KphToMph(float kph)
+    private static float KphToMph(float kph)
     {
         return kph * 0.621371f;
     }
@@ -133,6 +134,18 @@ else
     {
         SelectedTab = tab;
     }
+
+    private static string ConvertDegreesToCompass(int degrees)
+    {
+        string[] compassPoints = { "N", "NE", "E", "SE", "S", "SW", "W", "NW" };
+        int compassIndex = (int)Math.Round((degrees % 360) / 45.0);
+
+        // Ensure the index is within the array bounds
+        compassIndex = compassIndex % compassPoints.Length;
+
+        return compassPoints[compassIndex];
+    }
+
 
     private string GetDateSuffix(int day)
     {

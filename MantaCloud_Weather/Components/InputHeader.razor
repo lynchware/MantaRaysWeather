@@ -28,14 +28,6 @@
     [Parameter]
     public int? ZipCode { get; set; } = null;
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            await JS.InvokeVoidAsync("setBackgroundImage", "none");
-        }
-    }
-
     public async Task SetZipCode()
     {
         await OnZipCodeEntered.InvokeAsync(ZipCode.ToString());

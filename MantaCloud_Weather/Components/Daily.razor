@@ -24,7 +24,7 @@ else
                             <img src="@($"/img/{GetForecastImage(day.ShortForecast, day.IsDaytime)}")" width="160" alt="@day.ShortForecast" />
                         </div>
                         <div class="@(currentDay != lastDay ? "high" : "low")forecast-temp">
-                            <img src="/img/dewpointIcon.png" alt="dew icon" style="width: 1rem">
+                            <img src="img/Humidity.svg" alt="dew icon" style="width: 1rem">
                             <strong>@(currentDay != lastDay ? "High" : "Low") </strong>
                             <span>@($"{day.Temperature}\u00B0{day.TemperatureUnit}")</span>
                         </div>

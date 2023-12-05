@@ -94,12 +94,11 @@ h1 {
 
 h2 {
 	color: var(--primary);
-	text-shadow: -1px -1px 0 #808080, 1px -1px 0 #808080, -1px 1px 0 #808080, 1px 1px 0 #808080;
 }
 
 h3 {
 	color: var(--secondary);
-	font-size: 1.25rem;
+	font-size: 1.5rem;
 	font-weight: 600;
 	letter-spacing: 1px;
 	text-align: center;
@@ -109,6 +108,9 @@ h4 {
 	color: var(--primary);
 	font-size: 1.25rem;
 	font-weight: 600;
+}
+sup {
+	top: -0.2em;
 }
 /*----------------*/
 /*--Main Layout--*/
@@ -252,29 +254,87 @@ input[type=number]::-webkit-outer-spin-button {
 	align-items: center;
 	background: var(--bg-light);
 	border-radius: 17px;
+	margin-bottom: 20px;
 }
-
+1
 .currentForecastImage {
 	align-items: center;
-	width: 302px;
-	height: 219px;
 	flex-shrink: 0;
+	padding: 10px 25px;
 }
 
 	.currentForecastImage > img {
 		width: 100%;
+		min-width:160px;
 		height: 100%;
+		padding: 5px;
 	}
 
 .currentData {
 	display: flex;
+	padding: 11px 34px;
 	flex-direction: column;
+	/*align-items: center;*/
+	justify-content: space-between;
+	gap: 15px;
+	flex-shrink: 0;
+}
+
+	.currentData h1, .currentData h3 {
+		text-align: center;
+		line-height: 80%;
+		margin: 0;
+		color: var(--primary-light);
+	}
+
+.currentLowHigh {
+	display: flex;
+}
+
+.windHumid {
+	display: flex;
+	justify-content: flex-end;
+	align-items: flex-end;
+	font-size: 1.375rem;
+}
+
+	.windHumid > div {
+		display: flex;
+		padding: 3px 2px;
+		justify-content: flex-end;
+		align-items: center;
+		gap: 20px;
+	}
+
+.currentLowHigh {
+	display: flex;
 	justify-content: space-between;
 	align-items: center;
 }
-	.currentTemp {
-		display: flex;
+
+	.currentLowHigh > div {
+		display: inline-flex;
+		justify-content: center;
+		align-items: center;
+		gap: 10px;
 	}
+
+		.currentLowHigh > div > img {
+			width: 25px;
+		}
+		.currentLowHigh > div {
+			text-align: right;
+			font-size: 32px;
+			font-weight: 500;
+			line-height: 25px;
+			letter-spacing: 1.1px;
+		}
+		.currentLowHigh > div:first-child {
+			color: #ED683C;
+		}
+		.currentLowHigh > div:last-child {
+			color: #2E4C60;
+		}
 
 
 .forecastWrapper {
@@ -359,6 +419,39 @@ forecast-wind {
 		width: 3rem;
 		padding: 2px;
 	}
+	/*--CurrentForecast--*/
+	.currentForecastContainer {
+		padding: 4px 5px;
+	}
+	.currentData{
+		align-items: end;
+		padding: 5px;
+		gap: 12px;
+	}
+		.currentData h1{
+			font-size: 3rem;
+		}
+		.currentData h3 {
+			font-size: 1.2rem;
+			padding-top: 5px;
+			padding-bottom: 5px;
+		}
+	.windHumid {
+		font-size: 1.2rem;
+		align-self: stretch;
+		gap: 10px;
+	}
+		.windHumid > div {
+			padding: 0px 2px;
+			gap: 5px;
+		}
+	.currentLowHigh {
+		gap: 15px;
+	}
+		.currentLowHigh > div {
+			font-size: 1.4rem;
+			gap: 5px;
+		}
 }
 
 /*Title Screen Animation*/
