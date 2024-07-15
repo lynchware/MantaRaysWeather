@@ -53,4 +53,4 @@ jobs:
           app-name: 'MantaRaysWeather'
           slot-name: 'Production'
           package: .
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_29C4D4BB79374AB8AAD0AADD61873E3F }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_7A393AF6C18F46B6B2510848D6D3873A }}
