@@ -151,7 +151,7 @@
     public class Windchill
     {
         public string unitCode { get; set; }
-        public float value { get; set; }
+        public float? value { get; set; }
         public string qualityControl { get; set; }
     }
 
