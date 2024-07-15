@@ -7,6 +7,7 @@
 	--primary-light: #2F5D7D;
 	--secondary: #ED683C;
 	--secondary-light: #FFE029;
+	--tertiary: FEC90E;
 	--black: #231F20;
 	--gray-dark: #45535C;
 	--gray-primary: #93B0C1;
@@ -224,6 +225,7 @@ input[type=number]::-webkit-outer-spin-button {
 		transition: all 0.2s ease-in-out;
 		font-size: 1rem;
 		font-weight: 700;
+		color: var(--tertiary);
 	}
 
 		.waveTabs button:nth-child(2) {
