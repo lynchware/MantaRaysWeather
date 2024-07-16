@@ -1,87 +1,64 @@
-name: Build and deploy ASP.Net Core app to an Azure Web App
-
-env:
-  AZURE_WEBAPP_NAME: MantaRaysWeather   # The name of the Azure Web App
-  AZURE_WEBAPP_PACKAGE_PATH: './publish'  # The directory to output the published files
-  DOTNET_VERSION: '8.0'  # The .NET version to use
+name: Build and deploy ASP.Net Core app to Azure Web App - MantaRaysWeather
 
 on:
   push:
-    branches: [ "main" ]  # Trigger on pushes to the main branch
-  workflow_dispatch:  # Allows manual triggering of the workflow
+    branches:
+      - main
+  workflow_dispatch:
 
-permissions:
-  contents: read  # Default permissions for the workflow
+env:
+  AZURE_WEBAPP_NAME: MantaRaysWeather
+  AZURE_WEBAPP_PACKAGE_PATH: './myapp'  # Ensure this matches the publish path
+  DOTNET_VERSION: '8.0'
 
 jobs:
   build:
-    runs-on: windows-latest  # Use a Windows runner for the build job
+    runs-on: windows-latest
 
     steps:
-      - name: Checkout code  # Checkout the repository code
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up .NET Core  # Set up the specified .NET version
-        uses: actions/setup-dotnet@v2
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
-      - name: Set up dependency caching for faster builds  # Cache dependencies to speed up builds
-        uses: actions/cache@v3
-        with:
-          path: ~/.nuget/packages
-          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-nuget-
-
-      - name: Build with dotnet  # Build the project
+      - name: Build with dotnet
         run: dotnet build --configuration Release
 
-      - name: List workspace directory contents before publish  # Debugging step to list initial directory contents
-        run: |
-          Get-ChildItem -Path . -Recurse
+      - name: dotnet publish
+        run: dotnet publish -c Release -o ${{ env.DOTNET_ROOT }}/myapp
 
-      - name: dotnet publish  # Publish the project to the specified directory
-        run: dotnet publish -c Release -o ${{ github.workspace }}/publish
-
-      - name: List publish directory contents after publish  # Debugging step to list the contents of the publish directory
-        run: |
-          Get-ChildItem -Path ${{ github.workspace }}/publish -Recurse
-
-      - name: Upload artifact for deployment job  # Upload the published files as an artifact
-        uses: actions/upload-artifact@v3
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v4
         with:
           name: .net-app
-          path: ${{ github.workspace }}/publish
+          path: ${{ env.DOTNET_ROOT }}/myapp
 
   deploy:
-    permissions:
-      contents: none  # Deployment job does not need read permissions on the repository
-    runs-on: ubuntu-latest  # Use a Linux runner for the deployment job
-    needs: build  # This job depends on the build job
+    runs-on: windows-latest
+    needs: build
     environment:
-      name: 'Development'
+      name: 'production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-
+    
     steps:
-      - name: Download artifact from build job  # Download the artifact uploaded in the build job
-        uses: actions/download-artifact@v3
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v4
         with:
           name: .net-app
-
-      - name: List downloaded artifact contents  # Debugging step to list the contents of the downloaded artifact
-        run: |
-          ls -la .net-app
-
-      - name: Deploy to Azure Web App  # Deploy the application to Azure
+      
+      - name: Deploy to Azure Web App
         id: deploy-to-webapp
-        uses: azure/webapps-deploy@v2
+        uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          slot-name: 'production'
+          package: .net-app  # Ensure this matches the downloaded artifact path
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: .net-app
 
-      - name: Set environment variables  # Set environment variables from secrets
+      - name: Set environment variables
         run: |
           echo APPLICATIONINSIGHTS_CONNECTION_STRING=${{ secrets.APPLICATIONINSIGHTS_CONNECTION_STRING }} >> $GITHUB_ENV
           echo ApplicationInsights__ConnectionString=${{ secrets.ApplicationInsights__ConnectionString }} >> $GITHUB_ENV
