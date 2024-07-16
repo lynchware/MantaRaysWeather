@@ -65,13 +65,14 @@ jobs:
           package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
 
       - name: Set environment variables
-        run: |
-          echo APPLICATIONINSIGHTS_CONNECTION_STRING=${{ secrets.APPLICATIONINSIGHTS_CONNECTION_STRING }} >> $GITHUB_ENV
-          echo ApplicationInsights__ConnectionString=${{ secrets.ApplicationInsights__ConnectionString }} >> $GITHUB_ENV
-          echo ApplicationInsights__LogLevel__Default=${{ secrets.APPLICATIONINSIGHTS__LogLevel__Default }} >> $GITHUB_ENV
-          echo APIs__NationalWeatherService__Uri=${{ secrets.APIs__NationalWeatherService__Uri }} >> $GITHUB_ENV
-          echo APIs__NationalWeatherService__UserAgent=${{ secrets.APIs__NationalWeatherService__UserAgent }} >> $GITHUB_ENV
-          echo APIs__NWSPointLocation__Uri=${{ secrets.APIs__NWSPointLocation__Uri }} >> $GITHUB_ENV
-          echo APIs__NWSPointLocation__UserAgent=${{ secrets.APIs__NWSPointLocation__UserAgent }} >> $GITHUB_ENV
-          echo APIs__GeoCode__Uri=${{ secrets.APIs__GeoCode__Uri }} >> $GITHUB_ENV
-          echo APIs__GeoCode__Key=${{ secrets.APIs__GeoCode__Key }} >> $GITHUB_ENV
+        env:
+          APPLICATIONINSIGHTS_CONNECTION_STRING: ${{ secrets.APPLICATIONINSIGHTS_CONNECTION_STRING }}
+          ApplicationInsights__ConnectionString: ${{ secrets.ApplicationInsights__ConnectionString }}
+          ApplicationInsights__LogLevel__Default: ${{ secrets.APPLICATIONINSIGHTS__LogLevel__Default }}
+          APIs__NationalWeatherService__Uri: ${{ secrets.APIs__NationalWeatherService__Uri }}
+          APIs__NationalWeatherService__UserAgent: ${{ secrets.APIs__NationalWeatherService__UserAgent }}
+          APIs__NWSPointLocation__Uri: ${{ secrets.APIs__NWSPointLocation__Uri }}
+          APIs__NWSPointLocation__UserAgent: ${{ secrets.APIs__NWSPointLocation__UserAgent }}
+          APIs__GeoCode__Uri: ${{ secrets.APIs__GeoCode__Uri }}
+          APIs__GeoCode__Key: ${{ secrets.APIs__GeoCode__Key }}
+        run: echo Environment variables set
