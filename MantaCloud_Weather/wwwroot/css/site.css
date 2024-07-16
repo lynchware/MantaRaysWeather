@@ -7,7 +7,7 @@
 	--primary-light: #2F5D7D;
 	--secondary: #ED683C;
 	--secondary-light: #FFE029;
-	--tertiary: FEC90E;
+	--tertiary: #FEC90E;
 	--black: #231F20;
 	--gray-dark: #45535C;
 	--gray-primary: #93B0C1;
@@ -252,13 +252,19 @@ input[type=number]::-webkit-outer-spin-button {
 .currentForecastContainer {
 	display: flex;
 	flex-direction: row;
-	justify-content: space-between;
+	justify-content: center;
 	align-items: center;
 	background: var(--bg-light);
 	border-radius: 17px;
 	margin-bottom: 20px;
 }
-1
+@media screen and (max-width: 750px){
+	.currentForecastContainer{
+		justify-content: space-between;
+		width: 100%;
+	}
+}
+
 .currentForecastImage {
 	align-items: center;
 	flex-shrink: 0;

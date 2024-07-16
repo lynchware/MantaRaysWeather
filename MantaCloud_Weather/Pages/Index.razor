@@ -105,8 +105,8 @@ else
         hourlyForecast = combinedResult.Data.Hourly;
         //CurrentForecast for some reason is in Celsius.  Convert to Fahrenheit
         currentForecast.properties.temperature.value = CelsiusToFahrenheit(currentForecast.properties.temperature.value);
-        currentForecast.properties.windSpeed.value = KphToMph(currentForecast.properties.windSpeed.value);
-        currentForecast.properties.windDirection.direction = ConvertDegreesToCompass(currentForecast.properties.windDirection.value);
+        currentForecast.properties.windSpeed.value = KphToMph(currentForecast.properties.windSpeed.value ?? 0);
+        currentForecast.properties.windDirection.direction = ConvertDegreesToCompass(currentForecast.properties.windDirection.value ?? 0);
         dayHigh = dailyForecast?.Properties.Periods.OrderBy(x => x.Number).FirstOrDefault(x => x.IsDaytime)?.Temperature ?? 0;
         dayLow = dailyForecast?.Properties.Periods.OrderBy(x => x.Number).FirstOrDefault(x => !x.IsDaytime)?.Temperature ?? 0;
         isLoading = false;

@@ -60,7 +60,7 @@
     public class Winddirection
     {
         public string unitCode { get; set; }
-        public int value { get; set; }
+        public int? value { get; set; }
         public string direction { get; set; }
         public string qualityControl { get; set; }
     }
@@ -68,10 +68,10 @@
     public class Windspeed
     {
         public string unitCode { get; set; }
-        public float value { get; set; }
+        public float? value { get; set; }
         public int RoundedValue
         {
-            get { return (int)Math.Round(value); }
+            get { return (int)Math.Round(value ?? 0); }
         }
         public string qualityControl { get; set; }
     }
@@ -79,28 +79,28 @@
     public class Windgust
     {
         public string unitCode { get; set; }
-        public object value { get; set; }
+        public object? value { get; set; }
         public string qualityControl { get; set; }
     }
 
     public class Barometricpressure
     {
         public string unitCode { get; set; }
-        public int value { get; set; }
+        public int? value { get; set; }
         public string qualityControl { get; set; }
     }
 
     public class Sealevelpressure
     {
         public string unitCode { get; set; }
-        public object value { get; set; }
+        public object? value { get; set; }
         public string qualityControl { get; set; }
     }
 
     public class Visibility
     {
         public string unitCode { get; set; }
-        public int value { get; set; }
+        public int? value { get; set; }
         public string qualityControl { get; set; }
     }
 
@@ -126,14 +126,14 @@
     public class Precipitationlast3hours
     {
         public string unitCode { get; set; }
-        public object value { get; set; }
+        public object? value { get; set; }
         public string qualityControl { get; set; }
     }
 
     public class Precipitationlast6hours
     {
         public string unitCode { get; set; }
-        public object value { get; set; }
+        public object? value { get; set; }
         public string qualityControl { get; set; }
     }
 
@@ -158,7 +158,7 @@
     public class Heatindex
     {
         public string unitCode { get; set; }
-        public object value { get; set; }
+        public object? value { get; set; }
         public string qualityControl { get; set; }
     }
 

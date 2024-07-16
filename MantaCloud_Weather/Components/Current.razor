@@ -1,31 +1,34 @@
-﻿<div class="currentForecastContainer">
-    <div class="currentForecastImage">
-        <img src="@($"img/{iconUrl}")" alt="Current Forecast icon image" />
-    </div>
-    <div class="currentData">
-        <h1>@($"{Forecast.properties.temperature.value}")<sup>&deg;F</sup></h1>
-        <h3>@(Forecast.properties.textDescription)</h3>
-        <div class="windHumid">
-            <div class="wind">
-                <img src="img/wind.svg" width="26" height="24" alt="wind icon">
-                <span>@($"{Forecast.properties.windDirection.direction}{Forecast.properties.windSpeed.RoundedValue}")<sup>mph</sup></span>
+﻿<div class="d-flex justify-content-center">
+    <div class="currentForecastContainer">
+        <div class="currentForecastImage">
+            <img src="@($"img/{iconUrl}")" alt="Current Forecast icon image" />
+        </div>
+        <div class="currentData">
+            <h1>@($"{Forecast.properties.temperature.value}")<sup>&deg;F</sup></h1>
+            <h3>@(Forecast.properties.textDescription)</h3>
+            <div class="windHumid">
+                <div class="wind">
+                    <img src="img/wind.svg" width="26" height="24" alt="wind icon">
+                    <span>@($"{Forecast.properties.windDirection.direction}{Forecast.properties.windSpeed.RoundedValue}")<sup>mph</sup></span>
+                </div>
+                <div class="humidity">
+                    <img src="img/Humidity.svg" height="28" alt="humidity icon">
+                    <span>@($"{Forecast.properties.relativeHumidity.RoundedValue}")<sup>%</sup></span>
+                </div>
             </div>
-            <div class="humidity">
-                <img src="img/Humidity.svg"height="28" alt="humidity icon">
-                <span>@($"{Forecast.properties.relativeHumidity.RoundedValue}")<sup>%</sup></span>
+            <div class="currentLowHigh">
+                <div>
+                    <img src="img/up_arrow_icon.svg" alt="high temp icon" />
+                    <span>@($"{HighTemp}")<sup>&deg;F</sup></span>
+                </div>
+                <div>
+                    <img src="img/down_arrow_icon.svg" alt="low temp icon" />
+                    <span>@($"{LowTemp}")<sup>&deg;F</sup></span>
+                </div>
             </div>
         </div>
-        <div class="currentLowHigh">
-            <div>
-                <img src="img/up_arrow_icon.svg" alt="high temp icon" />
-                <span>@($"{HighTemp}")<sup>&deg;F</sup></span>
-            </div>
-            <div>
-                <img src="img/down_arrow_icon.svg" alt="low temp icon" />
-                <span>@($"{LowTemp}")<sup>&deg;F</sup></span>
-            </div>
-        </div>
     </div>
+
 </div>
 
     @code {
