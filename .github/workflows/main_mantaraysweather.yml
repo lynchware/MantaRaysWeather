@@ -1,91 +1,73 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy ASP.Net Core app to an Azure Web App
-
-env:
-  AZURE_WEBAPP_NAME: MantaRaysWeather
-  AZURE_WEBAPP_PACKAGE_PATH: './publish'
-  DOTNET_VERSION: '8.0'
+name: Build and deploy ASP.Net Core app to Azure Web App - MantaRaysWeather
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
   workflow_dispatch:
 
-permissions:
-  contents: read
+env:
+  AZURE_WEBAPP_NAME: MantaRaysWeather
+  DOTNET_VERSION: '8.0'
 
 jobs:
   build:
     runs-on: windows-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: Set up .NET Core
-        uses: actions/setup-dotnet@v2
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
-      - name: Set up dependency caching for faster builds
-        uses: actions/cache@v3
-        with:
-          path: ~/.nuget/packages
-          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-nuget-
-
       - name: Build with dotnet
-        run: dotnet build --configuration Release
+        run: dotnet build --configuration Release MantaCloud_Weather/MantaRays_Weather.csproj
 
       - name: dotnet publish
-        run: dotnet publish -c Release -o ./publish
-
-      - name: List publish directory contents
-        run: ls -la ./publish
+        run: dotnet publish MantaCloud_Weather/MantaRays_Weather.csproj -c Release -o ${{ github.workspace }}/myapp
 
       - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: .net-app
-          path: ./publish
+          path: ${{ github.workspace }}/myapp
 
   deploy:
-    permissions:
-      contents: none
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     needs: build
     environment:
-      name: 'Development'
+      name: 'production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-
+    
     steps:
       - name: Download artifact from build job
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: .net-app
-
-      - name: List downloaded artifact contents
-        run: ls -la .net-app
-
+      
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
-        uses: azure/webapps-deploy@v2
+        uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          slot-name: 'production'
+          package: .net-app  # Ensure this matches the downloaded artifact path
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: .net-app
 
       - name: Set environment variables
         run: |
           echo APPLICATIONINSIGHTS_CONNECTION_STRING=${{ secrets.APPLICATIONINSIGHTS_CONNECTION_STRING }} >> $GITHUB_ENV
           echo ApplicationInsights__ConnectionString=${{ secrets.ApplicationInsights__ConnectionString }} >> $GITHUB_ENV
-          echo ApplicationInsights__LogLevel__Default=${{ secrets.ApplicationInsights__LogLevel__Default }} >> $GITHUB_ENV
+          echo ApplicationInsights__LogLevel__Default=${{ secrets.APPLICATIONINSIGHTS__LogLevel__Default }} >> $GITHUB_ENV
           echo APIs__NationalWeatherService__Uri=${{ secrets.APIs__NationalWeatherService__Uri }} >> $GITHUB_ENV
           echo APIs__NationalWeatherService__UserAgent=${{ secrets.APIs__NationalWeatherService__UserAgent }} >> $GITHUB_ENV
           echo APIs__NWSPointLocation__Uri=${{ secrets.APIs__NWSPointLocation__Uri }} >> $GITHUB_ENV
           echo APIs__NWSPointLocation__UserAgent=${{ secrets.APIs__NWSPointLocation__UserAgent }} >> $GITHUB_ENV
           echo APIs__GeoCode__Uri=${{ secrets.APIs__GeoCode__Uri }} >> $GITHUB_ENV
           echo APIs__GeoCode__Key=${{ secrets.APIs__GeoCode__Key }} >> $GITHUB_ENV
-
