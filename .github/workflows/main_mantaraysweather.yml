@@ -42,6 +42,9 @@ jobs:
       - name: dotnet publish
         run: dotnet publish -c Release -o ./publish
 
+      - name: List publish directory contents
+        run: ls -la ./publish
+
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
         with:
@@ -63,13 +66,16 @@ jobs:
         with:
           name: .net-app
 
+      - name: List downloaded artifact contents
+        run: ls -la .net-app
+
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: './publish'
+          package: .net-app
 
       - name: Set environment variables
         run: |
@@ -82,3 +88,4 @@ jobs:
           echo APIs__NWSPointLocation__UserAgent=${{ secrets.APIs__NWSPointLocation__UserAgent }} >> $GITHUB_ENV
           echo APIs__GeoCode__Uri=${{ secrets.APIs__GeoCode__Uri }} >> $GITHUB_ENV
           echo APIs__GeoCode__Key=${{ secrets.APIs__GeoCode__Key }} >> $GITHUB_ENV
+
