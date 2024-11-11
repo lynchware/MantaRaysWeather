@@ -1,6 +1,7 @@
 ﻿@inject IConfiguration _config
 @inject IHttpClientFactory _clientFactory
 @inject IForecastAPIService _forecastService
+@attribute [Authorize]
 
 <div class="forecast-container">
     <div class="forecast-subcontainer">

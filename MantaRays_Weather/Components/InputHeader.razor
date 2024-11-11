@@ -9,12 +9,15 @@
 }
 <div class="inputHeaderSm">
     <img src="img/MantaRaysTitle.svg" id="headerTitle" alt="MantaRays Logo" />
-    <form @onsubmit="SetZipCode">
-        <InputNumber type="number" placeholder="Enter a ZipCode" @bind-Value="ZipCode" />
-        <button class="searchBtn">
-            <i class="bi bi-binoculars-fill"></i>
-        </button>
-    </form>
+    <div class="d-flex align-items-center">
+        <form @onsubmit="SetZipCode">
+            <InputNumber type="number" placeholder="Enter a ZipCode" @bind-Value="ZipCode" />
+            <button class="searchBtn">
+                <i class="bi bi-binoculars-fill"> Go</i>
+            </button>
+        </form>
+        <LoginDisplay />
+    </div>
 </div>
 
 

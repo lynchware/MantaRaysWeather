@@ -16,15 +16,23 @@
 <div class="@((!startAnimation) ? "d-none" : "inputHeader")">
     <img id="titleImage" src="/img/MantaRaysTitle.svg" alt="Logo Title">
     <div class="d-flex">
-        <input @ref="zipInputElement"
-               id="zipInputsm"
-               type="number"
-               placeholder="Enter a ZipCode"
-        @bind="zipCode"
-        @oninput="OnInput"
-        @onkeydown="HandleKeyDown" />
+        <AuthorizeView>
+            <Authorized>
+                <input @ref="zipInputElement"
+                       id="zipInputsm"
+                       type="number"
+                       placeholder="Enter a ZipCode"
+                       @bind="zipCode"
+                       @oninput="OnInput"
+                       @onkeydown="HandleKeyDown" />
 
-        <button class="mx-2 btn btn-primary" @onclick="() => SetZipCode(zipCode?.ToString())">Get Forecast</button>
+                <button class="mx-2 btn btn-primary" @onclick="() => SetZipCode(zipCode?.ToString())">Get Forecast</button>
+            </Authorized>
+            <NotAuthorized>
+                <LoginDisplay />
+            </NotAuthorized>
+        </AuthorizeView>
+
     </div>
     <img id="@((!startAnimation) ? "display-none" : "logoImage")" src="/img/MantaRays_Logo.svg" alt="Manta Ray Logo">
 </div>
@@ -38,15 +46,21 @@
     public EventCallback<string> OnZipCodeEntered { get; set; }
     private int? zipCode = null;
     private bool startAnimation = false;
+    private bool isElementFocused = false;
 
     private ElementReference zipInputElement;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender)
+        if(firstRender)
         {
             startAnimation = true;
             StateHasChanged();
+        }
+
+        if(firstRender && !isElementFocused && zipInputElement.Context != null)
+        {
+            isElementFocused = true;
             await zipInputElement.FocusAsync();
         }
     }
@@ -57,7 +71,7 @@
 
         var input = e.Value?.ToString();
 
-        if (!string.IsNullOrWhiteSpace(input) && Regex.IsMatch(input, zipCodePattern))
+        if(!string.IsNullOrWhiteSpace(input) && Regex.IsMatch(input, zipCodePattern))
         {
             zipCode = int.Parse(input);
         }
@@ -69,7 +83,7 @@
 
     private async Task HandleKeyDown(KeyboardEventArgs e)
     {
-        if (e.Key == "Enter")
+        if(e.Key == "Enter")
         {
             await SetZipCode(zipCode?.ToString());
         }
@@ -77,7 +91,7 @@
 
     public async Task SetZipCode(string zipCode)
     {
-        if (!string.IsNullOrWhiteSpace(zipCode))
+        if(!string.IsNullOrWhiteSpace(zipCode))
         {
             await OnZipCodeEntered.InvokeAsync(zipCode);
         }

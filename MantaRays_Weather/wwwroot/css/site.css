@@ -33,12 +33,40 @@ a, .btn-link {
 
 .btn-primary {
 	color: #fff;
-	background-color: #1b6ec2;
-	border-color: #1861ac;
+	background-color: var(--primary);
+	border-color: var(--bg-dark);
+}
+.btn-secondary {
+	color: var(--black);
+	background-color: var(--white);
+	border-color: var(--secondary);
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
 	box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+.searchBtn {
+	background: var(--bs-orange);
+	color: var(--white);
+	font-size: larger;
+	height: 3rem;
+	font-weight: 700;
+	border: var( --bg-dark) solid 1px;
+	box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+}
+.search:hover{
+	background: var(--secondary);
+	color: var(--secondary-light);
+}
+a{
+	text-decoration: none;
+	color: var(--primary);
+	-webkit-text-stroke: #D9D9D9;
+}
+a:hover{
+	color: var(--secondary);
+	-webkit-text-stroke: #D9D9D9;
 }
 
 .content {
@@ -162,25 +190,18 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 .inputHeaderSm form {
-	display: flex; /* Flexbox container */
-	flex-direction: row; /* Align form elements horizontally */
-	align-items: center; /* Align form elements vertically */
-	gap: 10px; /* Add space between form elements */
+	display: flex; 
+	flex-direction: row; 
+	align-items: center; 
 }
 
 .inputHeaderSm input {
-	height: 3rem; /* Set fixed height for input */
-	min-width: 12.2rem; /* Minimum width for the input */
-}
-
-.searchBtn {
-	padding: 0; /* Remove padding from the button */
-	background: none; /* Optional: Removes default button background */
-	border: none; /* Optional: Removes default button border */
+	height: 3rem; 
+	min-width: 12.2rem; 
 }
 
 .inputHeaderSm .bi-binoculars-fill {
-	color: darkorange; /* Set icon color */
+	color: var(--white); 
 }
 
 .errorString, loading {

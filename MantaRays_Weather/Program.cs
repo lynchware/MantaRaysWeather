@@ -1,11 +1,20 @@
-
 using MantaRays_Weather.Interfaces;
 using MantaRays_Weather.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.Logging.ApplicationInsights;
+using MantaRays_Weather.Data;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using MantaRays_Weather.Areas.Identity;
+using Microsoft.AspNetCore.Components.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
+var connectionString = builder.Configuration.GetConnectionString("MantaRays_WeatherContextConnection") ?? throw new InvalidOperationException("Connection string 'MantaRays_WeatherContextConnection' not found.");
+
+builder.Services.AddDbContext<MantaRays_WeatherContext>(options => options.UseSqlServer(connectionString));
+builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<MantaRays_WeatherContext>();
 
 // Add services to the container.
 builder.Services.AddRazorPages();
@@ -14,6 +23,7 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddHttpClient();
 builder.Services.AddSingleton<IForecastAPIService, ForecastAPIService>();
 builder.Services.AddScoped<ICookieStorageAccessor, CookieStorageAccessor>();
+builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
 var insightsKey = builder.Configuration["ApplicationInsights:ConnectionString"];
 var apiConfigs = builder.Configuration.GetSection("APIs").GetChildren();
 
@@ -50,11 +60,14 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication(); // Ensure this is added
+app.UseAuthorization();  // Ensure this is added
+
+app.MapControllers();
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
 
