@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using MantaRays_Weather.Models.Identity;
 
 namespace MantaRays_Weather.Data;
 
@@ -10,6 +11,8 @@ public class MantaRays_WeatherContext : IdentityDbContext<IdentityUser>
         : base(options)
     {
     }
+
+    public DbSet<PasskeyCredential>? PasskeyCredentials { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

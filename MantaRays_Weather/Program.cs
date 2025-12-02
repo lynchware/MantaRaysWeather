@@ -1,7 +1,5 @@
 using MantaRays_Weather.Interfaces;
 using MantaRays_Weather.Services;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.Logging.ApplicationInsights;
 using MantaRays_Weather.Data;
 using Microsoft.AspNetCore.Identity;
@@ -15,12 +13,17 @@ var connectionString = builder.Configuration.GetConnectionString("MantaRays_Weat
 builder.Services.AddDbContext<MantaRays_WeatherContext>(options => options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<MantaRays_WeatherContext>();
-
+// Use the default identity registration above. Do not register core identity again here
+// (that would re-add the same authentication schemes and cause "Scheme already exists").
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 builder.Services.AddServerSideBlazor();
 builder.Services.AddHttpClient();
+
+// Identity's AddDefaultIdentity already registers the authentication schemes and cookie handlers.
+// Avoid calling AddIdentityCookies or reconfiguring the same schemes here.
+
 builder.Services.AddSingleton<IForecastAPIService, ForecastAPIService>();
 builder.Services.AddScoped<ICookieStorageAccessor, CookieStorageAccessor>();
 builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
@@ -47,7 +50,6 @@ foreach (var apiConfig in apiConfigs)
         }
     });
 }
-builder.Services.AddApplicationInsightsTelemetry(insightsKey);
 builder.Logging.AddFilter<ApplicationInsightsLoggerProvider>("Default", LogLevel.Warning);
 var app = builder.Build();
 
@@ -64,8 +66,6 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseAuthentication(); // Ensure this is added
-app.UseAuthorization();  // Ensure this is added
 
 app.MapControllers();
 app.MapBlazorHub();
