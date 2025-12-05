@@ -1,0 +1,25 @@
+@page
+@model ConfirmEmailModel
+@{
+    ViewData["Title"] = "Confirm email";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <h1>@ViewData["Title"]</h1>
+            @if (Model.StatusMessage != null)
+            {
+                <div class="alert alert-success" role="alert">
+                    @Model.StatusMessage
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-danger" role="alert">
+                    Error confirming your email. Please try again or contact support.
+                </div>
+            }
+        </div>
+    </div>
+</div>

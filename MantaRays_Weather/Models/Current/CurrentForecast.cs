@@ -86,7 +86,7 @@
     public class Barometricpressure
     {
         public string unitCode { get; set; }
-        public int? value { get; set; }
+        public double? value { get; set; }
         public string qualityControl { get; set; }
     }
 
@@ -100,7 +100,7 @@
     public class Visibility
     {
         public string unitCode { get; set; }
-        public int? value { get; set; }
+        public double? value { get; set; }
         public string qualityControl { get; set; }
     }
 
