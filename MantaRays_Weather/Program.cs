@@ -16,7 +16,7 @@ var connectionString = builder.Configuration.GetConnectionString("MantaRays_Weat
 
 builder.Services.AddDbContext<MantaRays_WeatherContext>(options => options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<MantaRays_WeatherContext>();
+//builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<MantaRays_WeatherContext>();
 // Use the default identity registration above. Do not register core identity again here
 // (that would re-add the same authentication schemes and cause "Scheme already exists").
 // Add services to the container.
@@ -34,6 +34,15 @@ builder.Services.AddSingleton<IForecastAPIService, ForecastAPIService>();
 builder.Services.AddScoped<ICookieStorageAccessor, CookieStorageAccessor>();
 
 builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
+
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+{
+    options.SignIn.RequireConfirmedAccount = true;
+    options.Stores.SchemaVersion = IdentitySchemaVersions.Version3; // Enable passkey support
+}) 
+.AddEntityFrameworkStores<MantaRays_WeatherContext>()
+.AddDefaultTokenProviders();
+
 var insightsKey = builder.Configuration["ApplicationInsights:ConnectionString"];
 var apiConfigs = builder.Configuration.GetSection("APIs").GetChildren();
 
