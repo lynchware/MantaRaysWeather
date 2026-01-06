@@ -35,11 +35,16 @@ a, .btn-link {
 	color: #fff;
 	background-color: var(--primary);
 	border-color: var(--bg-dark);
+	border-radius: 6px;
+	font-size: 1.4rem;
 }
 .btn-secondary {
 	color: var(--black);
 	background-color: var(--white);
 	border-color: var(--secondary);
+	border-width: 2px;
+	border-radius: 6px;
+	font-size: 1.2rem;
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
@@ -116,8 +121,8 @@ a:hover{
 
 h1 {
 	color: var(--primary);
-	font-size: 5rem;
-	font-weight: 400;
+	font-size: 3.2rem;
+	font-weight: 600;
 	letter-spacing: 4px;
 }
 
@@ -418,6 +423,14 @@ forecast-wind {
 .lowforecast-temp {
 	color: var(--primary);
 }
+#tranbg {
+	background-color: rgba(217, 217, 217, 0.7);
+	padding: 5px 10px;
+	border: 2px solid var(--primary-light);
+	border-radius: 6px;
+	box-shadow: inset 0px 0px 0px 1px rgba(0, 0, 0, 0.12);
+}
+
 /*---Mobile Specific---*/
 @media only screen and (max-width: 768px) {
 	.waveTabs button {
