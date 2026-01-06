@@ -48,8 +48,34 @@
         {
             if (Forecast is not null)
             {
-             iconUrl = "MantaRayz_Logo_Clouds.svg";
+                var desc = Forecast.properties?.textDescription ?? string.Empty;
+                iconUrl = GetSvgForDescription(desc);
             }
+        }
+
+        private string GetSvgForDescription(string? description)
+        {
+            if (string.IsNullOrWhiteSpace(description))
+                return "MantaRays_Logo.svg"; // default (sunny/general)
+
+            var d = description.ToLowerInvariant();
+
+            if (d.Contains("sunny") || d.Contains("clear"))
+                return "MantaRays_Logo.svg"; // sunny / default
+
+            if (d.Contains("cloud"))
+                return "MantaRayz_Logo_Clouds.svg";
+
+            if (d.Contains("thunder") || d.Contains("storm") || d.Contains("thunderstorm"))
+                return "MantaRayz_Logo_Storm.svg";
+
+            if (d.Contains("rain") || d.Contains("shower") || d.Contains("showers"))
+                return "MantaRayz_Logo_Rain.svg";
+
+            if (d.Contains("snow") || d.Contains("blizzard") || d.Contains("flurries"))
+                return "MantaRays_Logo_Blizzard.svg";
+
+            return "MantaRays_Logo.svg"; // fallback
         }
     }
 

@@ -4,6 +4,7 @@ using MantaRays_Weather.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MantaRays_Weather.Migrations
 {
     [DbContext(typeof(MantaRays_WeatherContext))]
-    partial class MantaRays_WeatherContextModelSnapshot : ModelSnapshot
+    [Migration("20251216035247_TestOnNewMachine")]
+    partial class TestOnNewMachine
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
