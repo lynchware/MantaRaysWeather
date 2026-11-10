@@ -1,13 +1,53 @@
 ﻿<AuthorizeView>
     <Authorized>
-            <form method="post" action="Identity/Account/Logout">
-                <button type="submit" alt="Logout" class="nav-link btn btn-link" style="color: var(--white)"> <svg width="26" height="26" fill="var(--white)" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-  <path d="M10.643 5.097a1.2 1.2 0 0 1 1.752 0l7.614 8.124c.72.765.176 2.02-.875 2.02H3.907c-1.051 0-1.596-1.255-.876-2.022l7.612-8.122Zm8.492 8.943-7.616-8.123-7.615 8.123h15.23ZM2.52 17.64a1.2 1.2 0 0 1 1.2-1.2h15.6a1.2 1.2 0 0 1 1.2 1.2v1.2a1.2 1.2 0 0 1-1.2 1.2H3.72a1.2 1.2 0 0 1-1.2-1.2v-1.2Zm16.8 0H3.72v1.2h15.6v-1.2Z"></path>
-</svg> Logout</button>
-            </form>
+        <form method="post" action="Identity/Account/Logout">
+            <button type="submit" aria-label="Logout" class="nav-link btn btn-link" style="color: var(--white)">
+                <svg width="26" height="26" fill="var(--white)" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M10.643 5.097a1.2 1.2 0 0 1 1.752 0l7.614 8.124c.72.765.176 2.02-.875 2.02H3.907c-1.051 0-1.596-1.255-.876-2.022l7.612-8.122Zm8.492 8.943-7.616-8.123-7.615 8.123h15.23ZM2.52 17.64a1.2 1.2 0 0 1 1.2-1.2h15.6a1.2 1.2 0 0 1 1.2 1.2v1.2a1.2 1.2 0 0 1-1.2 1.2H3.72a1.2 1.2 0 0 1-1.2-1.2v-1.2Zm16.8 0H3.72v1.2h15.6v-1.2Z"></path>
+                </svg>
+                Logout
+            </button>
+        </form>
     </Authorized>
     <NotAuthorized>
-            <a class="btn btn-secondary mx-2" href="Identity/Account/Register">Register</a>
-            <a class="btn btn-primary"href="Identity/Account/Login">Log in</a>
+        @if (showAuthForm)
+        {
+            <div class="login-display-form-wrapper">
+                <button type="button" class="btn btn-link login-back-btn" @onclick="HideAuthForm" aria-label="Back">
+                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12l4.58-4.59z"></path>
+                    </svg>
+                </button>
+                <form method="post" action="/Identity/Account/Login" class="login-display-form">
+                    <AntiforgeryToken />
+                    <input type="hidden" name="returnUrl" value="/" />
+                    <input type="hidden" name="Input.RememberMe" value="false" />
+                    <input type="email" name="Input.Email" autocomplete="username" placeholder="Email" aria-label="Email" required />
+                    <input type="password" name="Input.Password" autocomplete="current-password" placeholder="Password" aria-label="Password" required />
+                    <button type="submit" class="btn btn-primary">Continue</button>
+                </form>
+            </div>
+        }
+        else
+        {
+            <div class="login-display-actions">
+                <button type="button" class="btn btn-secondary mx-2" @onclick="ShowAuthForm">Register</button>
+                <button type="button" class="btn btn-primary" @onclick="ShowAuthForm">Log in</button>
+            </div>
+        }
     </NotAuthorized>
 </AuthorizeView>
+
+@code {
+    private bool showAuthForm;
+
+    private void ShowAuthForm()
+    {
+        showAuthForm = true;
+    }
+
+    private void HideAuthForm()
+    {
+        showAuthForm = false;
+    }
+}

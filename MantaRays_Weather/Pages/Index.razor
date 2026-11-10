@@ -4,6 +4,7 @@
 @inject IHttpClientFactory _clientFactory
 @inject IForecastAPIService _forecastService
 @inject ICookieStorageAccessor _cookieStorage
+@inject AuthenticationStateProvider AuthenticationStateProvider
 @using MantaRays_Weather.Components
 
 @if (dailyForecast is null)
@@ -56,6 +57,7 @@ else
     private CurrentForecast? currentForecast;
     private DailyForecast? dailyForecast;
     private HourlyForecast? hourlyForecast;
+    private ActiveAlerts? activeAlerts;
     private enum Tabs { Today, Hourly, Daily };
     private Tabs SelectedTab { get; set; } = Tabs.Daily;
 
@@ -71,6 +73,12 @@ else
     {
         if (firstRender)
         {
+            var authenticationState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            if (authenticationState.User.Identity?.IsAuthenticated != true)
+            {
+                return;
+            }
+
             var savedZip = await _cookieStorage.GetValueAsync<string>("zipCode");
             if (!string.IsNullOrWhiteSpace(savedZip))
             {
@@ -80,7 +88,6 @@ else
                 StateHasChanged();
             }
         }
-
     }
     //refactor this to cache the data.  Combind the two calls into one that returns a single model with both current, daily and hourly forecasts.
     private async Task FetchWeatherForecast(string zip)
@@ -98,8 +105,8 @@ else
             return;
         }
         //Check this may only return the first word in the city name so New York would be New
-        city = string.IsNullOrEmpty(combinedResult.City) ? "" : combinedResult.City.Split(',')[0].Trim();
-
+        city = string.IsNullOrEmpty(combinedResult.City) ? "" : combinedResult.City.Split(',')[0].Trim();        
+        activeAlerts = combinedResult.Data.Alerts;
         currentForecast = combinedResult.Data.Current;
         dailyForecast = combinedResult.Data.Daily;
         hourlyForecast = combinedResult.Data.Hourly;
@@ -168,6 +175,13 @@ else
 
     public async Task SetZipCodeHandler(string zip)
     {
+        var authenticationState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        if (authenticationState.User.Identity?.IsAuthenticated != true)
+        {
+            errorString = "Please log in to view the forecast.";
+            return;
+        }
+
         await _cookieStorage.SetValueAsync("zipCode", zip);
         await FetchWeatherForecast(zip);
     }
