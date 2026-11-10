@@ -118,8 +118,7 @@ a:hover{
 	.blazor-error-boundary::after {
 		content: "An error has occurred."
 	}
-
-h1 {
+	1
 	color: var(--primary);
 	font-size: 3.2rem;
 	font-weight: 600;
