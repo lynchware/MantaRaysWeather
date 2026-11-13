@@ -7,7 +7,14 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @using MantaRays_Weather.Components
 
-@if (dailyForecast is null)
+@if (isInitializing || (isLoading && dailyForecast is null))
+{
+    <div class="d-flex flex-column align-items-center justify-content-center min-vh-100" role="status" aria-live="polite">
+        <div class="spinner-border text-primary" aria-hidden="true"></div>
+        <span class="mt-3">Loading weather...</span>
+    </div>
+}
+else if (dailyForecast is null)
 {
     <StartPage ErrorString="@errorString"
                IsLoading="@isLoading"
@@ -67,11 +74,17 @@ else
     private string city = "";
     private string errorString = "";
     private bool isLoading = false;
+    private bool isInitializing = true;
     private bool startAnimation = false;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender)
+        if (!firstRender)
+        {
+            return;
+        }
+
+        try
         {
             var authenticationState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
             if (authenticationState.User.Identity?.IsAuthenticated != true)
@@ -82,11 +95,21 @@ else
             var savedZip = await _cookieStorage.GetValueAsync<string>("zipCode");
             if (!string.IsNullOrWhiteSpace(savedZip))
             {
-                int.TryParse(savedZip, out int returnZip);
-                zipCode = returnZip;
-                await FetchWeatherForecast(savedZip);
-                StateHasChanged();
+                if (int.TryParse(savedZip, out var returnZip) && savedZip.Length == 5)
+                {
+                    zipCode = returnZip;
+                    await FetchWeatherForecast(savedZip);
+                }
+                else
+                {
+                    errorString = "Please enter a valid 5 digit zip code.";
+                }
             }
+        }
+        finally
+        {
+            isInitializing = false;
+            StateHasChanged();
         }
     }
     //refactor this to cache the data.  Combind the two calls into one that returns a single model with both current, daily and hourly forecasts.
@@ -98,27 +121,34 @@ else
             return;
         }
         isLoading = true;
-        var combinedResult = await _forecastService.GetForecastByZip(zip);
-        if (!combinedResult.IsSuccess || combinedResult.Data == null)
+        try
         {
-            errorString = combinedResult.ErrorMessage ?? "Failed to fetch Weather Forecast.";
-            return;
-        }
-        //Check this may only return the first word in the city name so New York would be New
-        city = string.IsNullOrEmpty(combinedResult.City) ? "" : combinedResult.City.Split(',')[0].Trim();        
-        activeAlerts = combinedResult.Data.Alerts;
-        currentForecast = combinedResult.Data.Current;
-        dailyForecast = combinedResult.Data.Daily;
-        hourlyForecast = combinedResult.Data.Hourly;
-        //CurrentForecast for some reason is in Celsius.  Convert to Fahrenheit
-        currentForecast.properties.temperature.value = CelsiusToFahrenheit(currentForecast.properties.temperature.value);
-        currentForecast.properties.windSpeed.value = KphToMph(currentForecast.properties.windSpeed.value ?? 0);
-        currentForecast.properties.windDirection.direction = ConvertDegreesToCompass(currentForecast.properties.windDirection.value ?? 0);
-        dayHigh = dailyForecast?.Properties.Periods.OrderBy(x => x.Number).FirstOrDefault(x => x.IsDaytime)?.Temperature ?? 0;
-        dayLow = dailyForecast?.Properties.Periods.OrderBy(x => x.Number).FirstOrDefault(x => !x.IsDaytime)?.Temperature ?? 0;
-        isLoading = false;
+            var combinedResult = await _forecastService.GetForecastByZip(zip);
+            if (!combinedResult.IsSuccess || combinedResult.Data == null)
+            {
+                errorString = combinedResult.ErrorMessage ?? "Failed to fetch Weather Forecast.";
+                return;
+            }
 
-        errorString = "";
+            //Check this may only return the first word in the city name so New York would be New
+            city = string.IsNullOrEmpty(combinedResult.City) ? "" : combinedResult.City.Split(',')[0].Trim();
+            activeAlerts = combinedResult.Data.Alerts;
+            currentForecast = combinedResult.Data.Current;
+            dailyForecast = combinedResult.Data.Daily;
+            hourlyForecast = combinedResult.Data.Hourly;
+            //CurrentForecast for some reason is in Celsius.  Convert to Fahrenheit
+            currentForecast.properties.temperature.value = CelsiusToFahrenheit(currentForecast.properties.temperature.value);
+            currentForecast.properties.windSpeed.value = KphToMph(currentForecast.properties.windSpeed.value ?? 0);
+            currentForecast.properties.windDirection.direction = ConvertDegreesToCompass(currentForecast.properties.windDirection.value ?? 0);
+            dayHigh = dailyForecast?.Properties.Periods.OrderBy(x => x.Number).FirstOrDefault(x => x.IsDaytime)?.Temperature ?? 0;
+            dayLow = dailyForecast?.Properties.Periods.OrderBy(x => x.Number).FirstOrDefault(x => !x.IsDaytime)?.Temperature ?? 0;
+
+            errorString = "";
+        }
+        finally
+        {
+            isLoading = false;
+        }
     }
 
     private void Clear()
