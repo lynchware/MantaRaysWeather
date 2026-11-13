@@ -1,0 +1,338 @@
+{
+  "settings": {
+    "components": {
+      "code": true,
+      "binaries": false
+    },
+    "targetId": ""
+  },
+  "analysisStartTime": "2026-11-12T23:02:57.3006538Z",
+  "analysisEndTime": "2026-11-12T23:03:00.5092995Z",
+  "privacyModeHelpUrl": "https://go.microsoft.com/fwlink/?linkid=2270980",
+  "stats": {
+    "summary": {
+      "projects": 1,
+      "issues": 1,
+      "incidents": 11,
+      "effort": 0
+    },
+    "charts": {
+      "severity": {
+        "Mandatory": 0,
+        "Optional": 0,
+        "Potential": 0,
+        "Information": 11
+      },
+      "category": {
+        "Pkg": 11
+      }
+    }
+  },
+  "projects": [
+    {
+      "path": "MantaRays_Weather.csproj",
+      "startingProject": true,
+      "issues": 1,
+      "storyPoints": 0,
+      "properties": {
+        "appName": "MantaRays_Weather",
+        "projectKind": "AspNetCore",
+        "frameworks": [
+          "net10.0"
+        ],
+        "languages": [
+          "C#"
+        ],
+        "tools": [
+          "MSBuild"
+        ],
+        "isSdkStyle": true,
+        "isTestProject": false,
+        "numberOfFiles": 118,
+        "numberOfCodeFiles": 56,
+        "linesTotal": 21409,
+        "linesOfCode": 4021,
+        "totalApiScanned": 0,
+        "minLinesOfCodeToChange": 0,
+        "maxLinesOfCodeToChange": 0
+      },
+      "ruleInstances": [
+        {
+          "incidentId": "dd330423-399a-4e94-9c4a-dcc5810fde3f",
+          "ruleId": "Pkg.0001",
+          "description": "Project references \u0027Microsoft.ApplicationInsights.AspNetCore\u0027 2.23.0; proposed upgrade to 3.2.0.",
+          "projectPath": "MantaRays_Weather.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.ApplicationInsights.AspNetCore, 2.23.0",
+              "protected": "Microsoft.ApplicationInsights.AspNetCore, 2.23.0"
+            },
+            "kind": "File",
+            "path": "MantaRays_Weather.csproj",
+            "snippet": "Microsoft.ApplicationInsights.AspNetCore, 2.23.0",
+            "protectedSnippet": "Microsoft.ApplicationInsights.AspNetCore, 2.23.0",
+            "label": "Microsoft.ApplicationInsights.AspNetCore 2.23.0",
+            "properties": {
+              "PackageId": "Microsoft.ApplicationInsights.AspNetCore",
+              "PackageVersion": "2.23.0",
+              "PackageNewVersion": "3.2.0",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "062c0cc4-6c56-4afd-b2e0-a059300c771d",
+          "ruleId": "Pkg.0001",
+          "description": "Project references \u0027Microsoft.Build\u0027 18.0.2; proposed upgrade to 18.9.6.",
+          "projectPath": "MantaRays_Weather.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.Build, 18.0.2",
+              "protected": "Microsoft.Build, 18.0.2"
+            },
+            "kind": "File",
+            "path": "MantaRays_Weather.csproj",
+            "snippet": "Microsoft.Build, 18.0.2",
+            "protectedSnippet": "Microsoft.Build, 18.0.2",
+            "label": "Microsoft.Build 18.0.2",
+            "properties": {
+              "PackageId": "Microsoft.Build",
+              "PackageVersion": "18.0.2",
+              "PackageNewVersion": "18.9.6",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "c06bdfcc-2f67-4851-b4dc-e7feed8949da",
+          "ruleId": "Pkg.0001",
+          "description": "Project references \u0027Microsoft.EntityFrameworkCore\u0027 10.0.15 (included in this upgrade).",
+          "projectPath": "MantaRays_Weather.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.EntityFrameworkCore, 10.0.15",
+              "protected": "Microsoft.EntityFrameworkCore, 10.0.15"
+            },
+            "kind": "File",
+            "path": "MantaRays_Weather.csproj",
+            "snippet": "Microsoft.EntityFrameworkCore, 10.0.15",
+            "protectedSnippet": "Microsoft.EntityFrameworkCore, 10.0.15",
+            "label": "Microsoft.EntityFrameworkCore 10.0.15",
+            "properties": {
+              "PackageId": "Microsoft.EntityFrameworkCore",
+              "PackageVersion": "10.0.15",
+              "PackageNewVersion": "10.0.15",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "0a66dd52-0290-4753-bda8-66c341b58dd8",
+          "ruleId": "Pkg.0001",
+          "description": "Project references \u0027Microsoft.EntityFrameworkCore.Design\u0027 10.0.15 (included in this upgrade).",
+          "projectPath": "MantaRays_Weather.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.EntityFrameworkCore.Design, 10.0.15",
+              "protected": "Microsoft.EntityFrameworkCore.Design, 10.0.15"
+            },
+            "kind": "File",
+            "path": "MantaRays_Weather.csproj",
+            "snippet": "Microsoft.EntityFrameworkCore.Design, 10.0.15",
+            "protectedSnippet": "Microsoft.EntityFrameworkCore.Design, 10.0.15",
+            "label": "Microsoft.EntityFrameworkCore.Design 10.0.15",
+            "properties": {
+              "PackageId": "Microsoft.EntityFrameworkCore.Design",
+              "PackageVersion": "10.0.15",
+              "PackageNewVersion": "10.0.15",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "443dcc5d-aa7a-4103-95e6-52e7fc985e6c",
+          "ruleId": "Pkg.0001",
+          "description": "Project references \u0027Microsoft.AspNetCore.Identity.EntityFrameworkCore\u0027 10.0.0; proposed upgrade to 10.0.15.",
+          "projectPath": "MantaRays_Weather.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.AspNetCore.Identity.EntityFrameworkCore, 10.0.0",
+              "protected": "Microsoft.AspNetCore.Identity.EntityFrameworkCore, 10.0.0"
+            },
+            "kind": "File",
+            "path": "MantaRays_Weather.csproj",
+            "snippet": "Microsoft.AspNetCore.Identity.EntityFrameworkCore, 10.0.0",
+            "protectedSnippet": "Microsoft.AspNetCore.Identity.EntityFrameworkCore, 10.0.0",
+            "label": "Microsoft.AspNetCore.Identity.EntityFrameworkCore 10.0.0",
+            "properties": {
+              "PackageId": "Microsoft.AspNetCore.Identity.EntityFrameworkCore",
+              "PackageVersion": "10.0.0",
+              "PackageNewVersion": "10.0.15",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "a96b5b9a-f7a5-4299-b0c8-be67712b0345",
+          "ruleId": "Pkg.0001",
+          "description": "Project references \u0027Microsoft.AspNetCore.Identity.UI\u0027 10.0.0; proposed upgrade to 10.0.15.",
+          "projectPath": "MantaRays_Weather.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.AspNetCore.Identity.UI, 10.0.0",
+              "protected": "Microsoft.AspNetCore.Identity.UI, 10.0.0"
+            },
+            "kind": "File",
+            "path": "MantaRays_Weather.csproj",
+            "snippet": "Microsoft.AspNetCore.Identity.UI, 10.0.0",
+            "protectedSnippet": "Microsoft.AspNetCore.Identity.UI, 10.0.0",
+            "label": "Microsoft.AspNetCore.Identity.UI 10.0.0",
+            "properties": {
+              "PackageId": "Microsoft.AspNetCore.Identity.UI",
+              "PackageVersion": "10.0.0",
+              "PackageNewVersion": "10.0.15",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "62581994-24a2-4ea5-86f9-45e058881bea",
+          "ruleId": "Pkg.0001",
+          "description": "Project references \u0027Microsoft.EntityFrameworkCore.Tools\u0027 10.0.0; proposed upgrade to 11.0.0.",
+          "projectPath": "MantaRays_Weather.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.EntityFrameworkCore.Tools, 10.0.0",
+              "protected": "Microsoft.EntityFrameworkCore.Tools, 10.0.0"
+            },
+            "kind": "File",
+            "path": "MantaRays_Weather.csproj",
+            "snippet": "Microsoft.EntityFrameworkCore.Tools, 10.0.0",
+            "protectedSnippet": "Microsoft.EntityFrameworkCore.Tools, 10.0.0",
+            "label": "Microsoft.EntityFrameworkCore.Tools 10.0.0",
+            "properties": {
+              "PackageId": "Microsoft.EntityFrameworkCore.Tools",
+              "PackageVersion": "10.0.0",
+              "PackageNewVersion": "11.0.0",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "3fc3968a-b2f1-45dd-86bd-8fd0555dc498",
+          "ruleId": "Pkg.0001",
+          "description": "Project references \u0027Microsoft.Extensions.Logging.ApplicationInsights\u0027 2.23.0 (included in this upgrade).",
+          "projectPath": "MantaRays_Weather.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.Extensions.Logging.ApplicationInsights, 2.23.0",
+              "protected": "Microsoft.Extensions.Logging.ApplicationInsights, 2.23.0"
+            },
+            "kind": "File",
+            "path": "MantaRays_Weather.csproj",
+            "snippet": "Microsoft.Extensions.Logging.ApplicationInsights, 2.23.0",
+            "protectedSnippet": "Microsoft.Extensions.Logging.ApplicationInsights, 2.23.0",
+            "label": "Microsoft.Extensions.Logging.ApplicationInsights 2.23.0",
+            "properties": {
+              "PackageId": "Microsoft.Extensions.Logging.ApplicationInsights",
+              "PackageVersion": "2.23.0",
+              "PackageNewVersion": "2.23.0",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "86c9e5ae-9d1f-460f-bc5c-244533cad845",
+          "ruleId": "Pkg.0001",
+          "description": "Project references \u0027Microsoft.VisualStudio.Web.CodeGeneration.Design\u0027 10.0.0-rc.1.25458.5; proposed upgrade to 10.0.3.",
+          "projectPath": "MantaRays_Weather.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.VisualStudio.Web.CodeGeneration.Design, 10.0.0-rc.1.25458.5",
+              "protected": "Microsoft.VisualStudio.Web.CodeGeneration.Design, 10.0.0-rc.1.25458.5"
+            },
+            "kind": "File",
+            "path": "MantaRays_Weather.csproj",
+            "snippet": "Microsoft.VisualStudio.Web.CodeGeneration.Design, 10.0.0-rc.1.25458.5",
+            "protectedSnippet": "Microsoft.VisualStudio.Web.CodeGeneration.Design, 10.0.0-rc.1.25458.5",
+            "label": "Microsoft.VisualStudio.Web.CodeGeneration.Design 10.0.0-rc.1.25458.5",
+            "properties": {
+              "PackageId": "Microsoft.VisualStudio.Web.CodeGeneration.Design",
+              "PackageVersion": "10.0.0-rc.1.25458.5",
+              "PackageNewVersion": "10.0.3",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "3ac0a8d6-f167-4cfa-b38b-77b65a694fa6",
+          "ruleId": "Pkg.0001",
+          "description": "Project references \u0027Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore\u0027 10.0.0; proposed upgrade to 10.0.15.",
+          "projectPath": "MantaRays_Weather.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore, 10.0.0",
+              "protected": "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore, 10.0.0"
+            },
+            "kind": "File",
+            "path": "MantaRays_Weather.csproj",
+            "snippet": "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore, 10.0.0",
+            "protectedSnippet": "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore, 10.0.0",
+            "label": "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore 10.0.0",
+            "properties": {
+              "PackageId": "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore",
+              "PackageVersion": "10.0.0",
+              "PackageNewVersion": "10.0.15",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "71fcf9f2-a2b4-47cf-a90a-4bac9b8dc791",
+          "ruleId": "Pkg.0001",
+          "description": "Project references \u0027Microsoft.EntityFrameworkCore.SqlServer\u0027 10.0.0; proposed upgrade to 10.0.15.",
+          "projectPath": "MantaRays_Weather.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.EntityFrameworkCore.SqlServer, 10.0.0",
+              "protected": "Microsoft.EntityFrameworkCore.SqlServer, 10.0.0"
+            },
+            "kind": "File",
+            "path": "MantaRays_Weather.csproj",
+            "snippet": "Microsoft.EntityFrameworkCore.SqlServer, 10.0.0",
+            "protectedSnippet": "Microsoft.EntityFrameworkCore.SqlServer, 10.0.0",
+            "label": "Microsoft.EntityFrameworkCore.SqlServer 10.0.0",
+            "properties": {
+              "PackageId": "Microsoft.EntityFrameworkCore.SqlServer",
+              "PackageVersion": "10.0.0",
+              "PackageNewVersion": "10.0.15",
+              "PackageReplacements": null
+            }
+          }
+        }
+      ],
+      "features": []
+    }
+  ],
+  "rules": {
+    "Pkg.0001": {
+      "id": "Pkg.0001",
+      "isFeature": false,
+      "description": "Project references a package included in this upgrade.\n\nThe project references one of the packages being upgraded. This finding records the reference (current and proposed version) so the assessment lists every affected project even when no breaking API changes were detected.",
+      "label": "Project references an upgraded package",
+      "severity": "Information",
+      "effort": 0
+    }
+  }
+}

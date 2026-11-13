@@ -110,7 +110,7 @@ public class ForecastAPIService : IForecastAPIService
                     return forecast;
                 }
             }
-            catch (Exception ex)
+             catch (Exception ex)
             {
                 _logger.LogWarning($"Will retry calling api as there was an error getting the forecast: {ex.Message}");
                 retries--;
