@@ -8,12 +8,16 @@
         @for (int i = 0; i < maxPeriods; i++)
         {
             var hour = Forecast.Properties.Periods[i];
+            var iconPath = ForecastIconMapper.GetIconPath(hour.ShortForecast, hour.IsDaytime);
             <div class="forecast-period">
                 <div class="forecast-header">
                     <h5>@ConvertToHourDisplay(hour.StartTime)</h5>
                 </div>
                 <div class="forecast-image">
-                    <img src="@hour.Icon" alt="Weather Icon" />
+                    @if (iconPath is not null)
+                    {
+                        <img src="@($"/img/{iconPath}")" alt="@hour.ShortForecast" />
+                    }
                 </div>
                 <div class="forecast-info">
                     <p>@hour.ShortForecast</p>

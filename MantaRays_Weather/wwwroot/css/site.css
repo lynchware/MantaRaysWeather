@@ -94,8 +94,10 @@ a, .btn-link {
 
 button, input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]),
 select {
-	border-color: var(--bg-dark);
-	border-radius: 6px;
+	border: none;
+}
+.btn, .form-control {
+	border: none;
 }
 button{
 	color: #fff;
@@ -105,9 +107,6 @@ button{
 .btn-secondary {
 	color: var(--black);
 	background-color: var(--white);
-	border-color: var(--secondary);
-	border-width: 2px;
-	border-radius: 6px;
 	font-size: 1.2rem;
 }
 
@@ -120,7 +119,6 @@ button{
 	color: var(--white);
 	font-size: larger;
 	font-weight: 700;
-	border: var( --bg-dark) solid 1px;
 	/* box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px; */
 }
 .search:hover{
@@ -242,6 +240,13 @@ input[type=number]::-webkit-outer-spin-button {
 .inputHeaderSm input {
 	min-width: 12.2rem;
 }
+.inputHeaderSm form > input {
+	border-radius: 17px 0 0 17px;
+	padding-left: 0.75rem;
+}
+.inputHeaderSm form > .searchBtn {
+	border-radius: 0 17px 17px 0;
+}
 .inputHeaderSm .bi-binoculars-fill {
 	color: var(--white); 
 }
@@ -280,11 +285,10 @@ input[type=number]::-webkit-outer-spin-button {
 		position: relative;
 		z-index: 3;
 		width: 8rem;
-		border-width: 1px;
-		border-color: #279bab;
+		border: 1px solid #279bab;
 		box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
 		border-radius: 113px 230px 0px 0px / 90px 150px 0px 0px;
-		background-color: var(--primary);
+		background-color: var(--primary-light);
 		transition: all 0.2s ease-in-out;
 		font-size: 1rem;
 		font-weight: 700;
@@ -308,7 +312,8 @@ input[type=number]::-webkit-outer-spin-button {
 		}
 
 		.waveTabs button.active {
-			background-color: rgb(48 104 137 / 89%);
+			z-index: 4;
+			background-color: var(--primary);
 			color: #fff;
 		}
 
@@ -317,6 +322,7 @@ input[type=number]::-webkit-outer-spin-button {
 	justify-content: end;
 	background: var(--bg-light);
 	border-radius: 17px;
+	margin-bottom: 0.75rem;
 	padding:0px 45px;
 	
 }
@@ -389,13 +395,15 @@ input[type=number]::-webkit-outer-spin-button {
 	padding: 2rem;
 	justify-content: center;
 	width: 97vw;
+	border-radius: 17px;
 }
 
 .forecast-subcontainer {
 	flex-direction: row;
 	justify-content: flex-start;
 	border: 4px groove yellow;
-	background-color: white;
+	border-radius: 17px;
+	background-color: var(--bg-light);
 	overflow-x: auto !important;
 }
 
@@ -427,9 +435,6 @@ forecast-wind {
 #tranbg {
 	background-color: rgba(217, 217, 217, 0.7);
 	padding: 5px 10px;
-	border: 2px solid var(--primary-light);
-	border-radius: 6px;
-	box-shadow: inset 0px 0px 0px 1px rgba(0, 0, 0, 0.12);
 }
 
 /*---Mobile Specific---*/
@@ -537,8 +542,7 @@ forecast-wind {
 	width: 10rem;
 	min-width: 0;
 	padding: 0.45rem 0.65rem;
-	border: 1px solid var(--gray-primary);
-	border-radius: 6px;
+	border: none;
 }
 
 .login-display-form .btn-primary {
@@ -582,8 +586,7 @@ forecast-wind {
 .identity-auth-form {
 	width: min(100%, 25rem);
 	padding: 1.75rem;
-	border: 1px solid rgba(19, 54, 77, 0.15);
-	border-radius: 0.75rem;
+	border: none;
 	background: #fff;
 	box-shadow: 0 0.75rem 2rem rgba(19, 54, 77, 0.15);
 	animation: identity-form-enter 420ms ease-out both;
